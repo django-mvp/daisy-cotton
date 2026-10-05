@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking.** `menu.item`: `class` and every attribute the component does not declare now land on
+  the entry's link or button, not on the list item around it. That is the element daisyUI's menu
+  markup configures, so `target`, `rel`, `download`, htmx attributes and a collapsed sidebar's
+  tooltip (`class="is-drawer-close:tooltip is-drawer-close:tooltip-right"` with `data-tip`) now
+  work on an entry. A project that styled the list item through `class` writes that `<li>` by
+  hand inside the menu.
+
+### Added
+
+- `menu.item`: `type` sets the button's type on an entry without an `href`. With
+  `type="submit"` and a `form` attribute, an entry such as sign-out submits a form elsewhere on
+  the page.
+
 ## [v0.1.2] - 2026-10-05
 
 ### Added

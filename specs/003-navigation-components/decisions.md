@@ -16,7 +16,9 @@ A placeholder `#` makes every `<c-link>` without an `href` look like a working l
 
 ## Attributes on list items go to the item's root
 
-The constitution sends everything a component does not declare to its root element. For menu, breadcrumb and step items that root is the `<li>`, not the link inside it. Attributes meant for the link (`target`, `hx-*`) are written on a link in the item's slot. The alternative, treating the inner link as the root, would carve an exception into the constitution for one family of components.
+The constitution sends everything a component does not declare to its root element. For breadcrumb and step items that root is the `<li>`, not the link inside it. Attributes meant for the link (`target`, `hx-*`) are written on a link in the item's slot. The alternative, treating the inner link as the root, would carve an exception into the constitution for one family of components.
+
+**Reversed for the menu item on 2026-10-05 (issue #120).** `<c-menu.item>` sends `class` and its undeclared attributes to its link or button, and its `<li>` takes none. Two things changed the answer. The workaround above never worked for the menu item: its slot renders inside the item's own `<a>` or `<button>`, so a link written there comes out nested inside another interactive element, which is invalid HTML. And daisyUI's menu markup puts everything a caller configures on the link or button: `target`, htmx attributes, a submitting button, the collapsed sidebar's tooltip. The README's first tie-break, following daisyUI, decides it. A project that needs a class on the list item writes the `<li>` by hand. Breadcrumb and step items are unchanged.
 
 ## Script-only menu classes are not attributes
 
@@ -116,3 +118,13 @@ After the three build batches, four small changes were made without a separate d
 The branch was rebased on main after pull request #100 merged. The one conflict, `link.html`'s `variant` annotation, kept main's wording.
 
 **ADR:** none — convergence fixes inside this feature.
+
+## D11 — Pre-existing tests the menu item's reversal invalidates
+
+Added 2026-10-05 with issue #120. These change because the behaviour they pin is the behaviour being reversed, and nothing else about them does:
+
+- `tests/test_menu.py::TestMenuItem::test_item_class_reaches_the_list_item_and_not_the_icon` pinned the caller's class on the `<li>`. It becomes `test_item_class_reaches_the_link_and_not_the_list_item_or_icon`, which still asserts the class stays off the icon.
+- `tests/test_menu.py::TestMenuItem::test_other_attributes_land_on_the_list_item` pinned pass-through attributes on the `<li>`. It becomes `test_other_attributes_land_on_the_link`, with a second case for the button.
+- `tests/test_menu.py::TestMenuPageContext::test_page_disabled_does_not_disable_an_item` read the list item's `class` attribute, which an enabled item no longer writes. It reads it with a default and asserts the same thing.
+
+**ADR:** none — test maintenance under an approved change.
