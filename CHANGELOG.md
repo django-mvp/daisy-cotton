@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.1.2] - 2026-10-05
+
 ### Added
 
 - `menu.submenu`: the `text` slot, now documented in the gallery, puts markup in the group's
