@@ -136,22 +136,82 @@ class TestMenuItem:
         assert icon["class"][:2] == ["fa", "fa-home"]
         assert icon["aria-hidden"] == "true"
 
-    def test_item_class_reaches_the_list_item_and_not_the_icon(
+    def test_item_class_reaches_the_link_and_not_the_list_item_or_icon(
         self, cotton_render_string_soup
     ):
         li = cotton_render_string_soup(
             '<c-menu.item href="/a" text="A" icon="fa fa-home" class="mine" />'
         ).li
-        assert li["class"] == ["mine"]
+        assert li.a["class"] == ["mine"]
+        assert not li.get("class")
         assert "mine" not in li.find("i")["class"]
 
-    def test_other_attributes_land_on_the_list_item(self, cotton_render_string_soup):
+    def test_item_class_reaches_the_button(self, cotton_render_string_soup):
+        li = cotton_render_string_soup('<c-menu.item text="Go" class="mine" />').li
+        assert li.button["class"] == ["mine"]
+        assert not li.get("class")
+
+    def test_item_class_is_merged_with_the_active_class(
+        self, cotton_render_string_soup
+    ):
+        soup = cotton_render_string_soup(
+            '<c-menu.item href="/a" text="A" active class="mine" />'
+            '<c-menu.item text="B" active class="mine" />'
+        )
+        assert soup.a["class"] == ["menu-active", "mine"]
+        assert soup.button["class"] == ["menu-active", "mine"]
+
+    def test_other_attributes_land_on_the_link(self, cotton_render_string_soup):
         li = cotton_render_string_soup(
-            '<c-menu.item href="/a" text="A" data-x="1" id="i" />'
+            '<c-menu.item href="/a" text="A" target="_blank" rel="noopener"'
+            ' hx-get="/b" data-tip="A" id="i" />'
         ).li
-        assert li["data-x"] == "1"
-        assert li["id"] == "i"
-        assert "data-x" not in li.a.attrs
+        a = li.a
+        assert a["target"] == "_blank"
+        assert a["rel"] == ["noopener"]
+        assert a["hx-get"] == "/b"
+        assert a["data-tip"] == "A"
+        assert a["id"] == "i"
+        assert li.attrs == {}
+
+    def test_other_attributes_land_on_the_button(self, cotton_render_string_soup):
+        li = cotton_render_string_soup(
+            '<c-menu.item text="Go" hx-post="/b" data-x="1" />'
+        ).li
+        assert li.button["hx-post"] == "/b"
+        assert li.button["data-x"] == "1"
+        assert li.attrs == {}
+
+    def test_type_and_form_make_the_button_submit_a_form(
+        self, cotton_render_string_soup
+    ):
+        soup = cotton_render_string_soup(
+            '<c-menu.item text="Sign out" type="submit" form="sign-out" />'
+        )
+        buttons = soup.find_all("button")
+        assert len(buttons) == 1
+        assert buttons[0].attrs == {"type": "submit", "form": "sign-out"}
+
+    def test_disabled_item_keeps_the_callers_class_off_the_list_item(
+        self, cotton_render_string_soup
+    ):
+        li = cotton_render_string_soup(
+            '<c-menu.item href="/a" text="A" disabled class="mine" />'
+        ).li
+        assert li["class"] == ["menu-disabled"]
+        assert li.a["class"] == ["mine"]
+
+    def test_hand_written_list_item_carries_its_own_class_beside_items(
+        self, cotton_render_string_soup
+    ):
+        ul = cotton_render_string_soup(
+            '<c-menu><c-menu.item href="/a" text="A" />'
+            '<li class="mine"><a href="/b">B</a></li></c-menu>'
+        ).ul
+        first, second = ul.find_all("li", recursive=False)
+        assert not first.get("class")
+        assert second["class"] == ["mine"]
+        assert second.a["href"] == "/b"
 
     def test_aria_label_lands_on_the_inner_link(self, cotton_render_string_soup):
         soup = cotton_render_string_soup(
@@ -282,7 +342,7 @@ class TestMenuPageContext:
         li = cotton_render_string_soup(
             '<c-menu.item text="A" />', {"disabled": True}
         ).li
-        assert "menu-disabled" not in li["class"]
+        assert "menu-disabled" not in li.get("class", [])
         assert li.button.get("disabled") is None
 
     def test_page_href_does_not_turn_an_item_into_a_link(
