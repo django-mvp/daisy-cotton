@@ -52,6 +52,9 @@ Related behaviour is grouped in a class, not scattered across module-level funct
 where the framework already owns the grouping (a `TemplateView` method, a decorator-registered
 template tag) or the function is genuinely standalone with no siblings.
 
+**Django standards.** Where code lives in a Django codebase, and when a new abstraction is worth
+adding, is set out in [`docs/contributing/standards/django.md`](docs/contributing/standards/django.md).
+
 ## Project articles
 
 ### Article XI — Agnostic of every adopter
@@ -133,4 +136,4 @@ Read at planning and review; applies to every change.
 
 ---
 
-**Version**: 3.0.0 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-09-28
+**Version**: 3.1.0 | **Ratified**: 2026-09-23 | **Last Amended**: 2026-10-12
