@@ -2,7 +2,7 @@
 
 Thanks for helping. This page covers setting up, running the component gallery, running the checks, and what a finished component looks like.
 
-Two pages set the rules every change follows: [testing](docs/contributing/standards/testing.md), for what gets a test and how tests are structured, and [code documentation](docs/contributing/standards/code-documentation.md), for docstrings, component annotations and comments.
+Three pages set the rules every change follows: [testing](docs/contributing/standards/testing.md), for what gets a test and how tests are structured, [code documentation](docs/contributing/standards/code-documentation.md), for docstrings, component annotations and comments, and [Django](docs/contributing/standards/django.md), for where code lives and when a new abstraction is worth adding.
 
 ## Set up
 
