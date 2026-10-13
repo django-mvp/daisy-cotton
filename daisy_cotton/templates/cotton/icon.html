@@ -1,9 +1,11 @@
+{% comment %}
 {# @description A basic icon primitive that renders an i element. Projects may shadow it with their own cotton/icon.html to resolve icons by name. #}
 {# @prop name:text | description:"CSS classes of the icon, such as an icon font class string." #}
 {# @prop class:text | description:"Extra classes added after the name." #}
-{% comment %}
+
   `name` is a literal class string, not a resolved icon: projects shadow this
   template to resolve names (docs/adr/0001-icon-is-an-extension-point.md).
-{% endcomment %}
-<c-vars name class />
-<i class="{{ name }} {{ class }}" {{ attrs }}></i>
+
+  Laid out to emit no whitespace around the element, with no final newline:
+  see "Components used inside a sentence" in CONTRIBUTING.md.
+{% endcomment %}<c-vars name class /><i class="{{ name }} {{ class }}" {{ attrs }}></i>

@@ -1,3 +1,4 @@
+{% load daisy_cotton %}{% comment %}
 {# @description A small label, usually a status, a count or a tag. Shows text, then the default slot. #}
 {# @prop text:text | description:"Badge text, shown before the default slot." #}
 {# @prop variant:select['neutral','primary','secondary','accent','info','success','warning','error'] | description:"Colour variant. Leave empty for the default colour." #}
@@ -8,6 +9,7 @@
 {# @prop ghost:boolean | description:"Draw the badge without a background." #}
 {# @prop class:text | description:"Extra classes added to the badge." #}
 {# @slot New — Content shown after the text. #}
-{% load daisy_cotton %}
-<c-vars text="" variant="" size="" outline="" dash="" soft="" ghost="" class="" />
-<span class="badge {% variation variant "badge" "neutral,primary,secondary,accent,info,success,warning,error" %} {% variation size "badge" "xs,sm,md,lg,xl" %}{% if outline %} badge-outline{% endif %}{% if dash %} badge-dash{% endif %}{% if soft %} badge-soft{% endif %}{% if ghost %} badge-ghost{% endif %} {{ class }}" {{ attrs }}>{{ text }}{{ slot }}</span>
+
+  Laid out to emit no whitespace around the element, with no final newline:
+  see "Components used inside a sentence" in CONTRIBUTING.md.
+{% endcomment %}<c-vars text="" variant="" size="" outline="" dash="" soft="" ghost="" class="" /><span class="badge {% variation variant "badge" "neutral,primary,secondary,accent,info,success,warning,error" %} {% variation size "badge" "xs,sm,md,lg,xl" %}{% if outline %} badge-outline{% endif %}{% if dash %} badge-dash{% endif %}{% if soft %} badge-soft{% endif %}{% if ghost %} badge-ghost{% endif %} {{ class }}" {{ attrs }}>{{ text }}{{ slot }}</span>

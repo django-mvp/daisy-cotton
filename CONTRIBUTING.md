@@ -65,3 +65,13 @@ A component is not done until it carries its annotations and the suite passes. I
 4. A line in the `[Unreleased]` section of the [CHANGELOG](CHANGELOG.md).
 
 A new template is picked up by the linter and both checks automatically. There is no list to add it to.
+
+## Components used inside a sentence
+
+`link`, `badge`, `kbd`, `status`, `icon` and `button` can sit in running text, where any whitespace the template emits around its element is drawn as a space: `(<c-badge text="new" />)` would read "( new )". Their templates are laid out so that nothing is emitted outside the element:
+
+- The annotations sit inside one `{% comment %}` block, each still a `{# … #}` on its own line. The gallery reads them there as it does anywhere else.
+- `{% load %}` comes before that block on the same line, and `<c-vars>` and the opening tag follow `{% endcomment %}` with nothing between them.
+- The file ends on the closing tag, with no final newline. The end-of-file hook in `.pre-commit-config.yaml` skips these six files by name.
+
+`tests/test_inline_whitespace.py` renders each of them between two characters and fails if anything separates them. A new component meant for running text gets the same layout, a line in that test's list and its name in the hook's `exclude`.
