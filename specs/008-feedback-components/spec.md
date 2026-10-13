@@ -63,7 +63,7 @@ A developer shows the result of an action, such as "Saved" or "Payment failed", 
 2. **Given** `outline` or `dash`, **When** it renders, **Then** the root carries `alert-outline` or `alert-dash`.
 3. **Given** `vertical`, **When** it renders, **Then** the root carries `alert-vertical`. **Given** `vertical horizontal="sm"`, **Then** it carries `alert-vertical` and `sm:alert-horizontal`.
 4. **Given** `role="status"`, **When** it renders, **Then** the root carries `role="status"` and no other role.
-5. **Given** `icon="..."`, or a `variant` with no `icon`, **When** it renders, **Then** `<c-icon>` draws the icon before the content and the icon is hidden from assistive technology.
+5. **Given** `icon="..."`, **When** it renders, **Then** `<c-icon>` draws the icon before the content and the icon is hidden from assistive technology. **Given** no `icon`, whatever the `variant`, **Then** no icon is drawn.
 6. **Given** `dismissible`, **When** it renders, **Then** a `<c-button>` dismiss control follows the content with the translatable accessible name "Dismiss", and in a browser with Alpine.js loaded, activating it by pointer or keyboard removes the alert.
 7. **Given** `class="mt-4" data-test="x"`, **When** it renders, **Then** `mt-4` is in the root's own class list and `data-test="x"` is on the root.
 8. **Given** the alert's gallery entry, **When** a developer opens it, **Then** every colour, every style (plain, soft, outline, dash), both directions, a responsive direction, an alert with an icon and a dismissible alert are shown.
@@ -171,7 +171,7 @@ A developer fills the space of content that has not arrived yet, such as a card,
 - A `variant`, `size` or `placement` value daisyUI does not define for that component emits no class for it and raises no error.
 - An alert given more than one style (`soft` and `outline`) emits every class given. The component does not pick between them.
 - An alert with `dismissible` on a page without Alpine.js renders its dismiss button, and the button does nothing. The README says so.
-- An alert whose `variant` has no matching icon in the project's `<c-icon>` renders an empty, hidden icon element. That is the icon extension point working as ADR 0001 describes.
+- An alert's `variant` sets its colour and nothing else. It never picks an icon, so a `variant` outside the four accepted ones asks the project's `<c-icon>` for nothing.
 - `delay` removes the alert after the given time whether or not anyone has read it. The documentation warns against using it on errors or on anything the reader must act on.
 - A progress `value` greater than `max`, or a radial progress `value` outside 0–100, is rendered as given. The browser and daisyUI limit the drawing, and the documentation states the ranges.
 - A progress or radial progress with no `label` has no accessible name, and the component cannot invent one. The documentation and every gallery example give one.
@@ -201,7 +201,7 @@ A developer fills the space of content that has not arrived yet, such as a card,
 
 - **FR-010**: `<c-alert>` MUST render a `<div>` carrying `alert` with `role="alert"` by default. A caller-given `role` MUST replace it, so exactly one `role` is emitted. *(US1)*
 - **FR-011**: `variant` MUST accept info, success, warning and error. `soft`, `outline` and `dash` MUST map to their daisyUI classes. `horizontal` and `vertical` MUST map to `alert-horizontal` and `alert-vertical`, behind a breakpoint prefix when given a breakpoint name. *(US1)*
-- **FR-012**: `icon`, or `variant` when no `icon` is given, MUST be drawn by `<c-icon>` before the default slot and hidden from assistive technology. *(US1)*
+- **FR-012**: `icon` MUST be drawn by `<c-icon>` before the default slot and hidden from assistive technology. `variant` MUST NOT pick an icon: an alert with no `icon` draws none. *(US1)*
 - **FR-013**: `dismissible` MUST render a dismiss control drawn by `<c-button>` after the default slot, with the translatable accessible name "Dismiss" and its glyph hidden from assistive technology, which removes the alert when Alpine.js is on the page. `delay` MUST keep removing the alert after the given number of milliseconds under the same condition. *(US1)*
 
 **Loading**

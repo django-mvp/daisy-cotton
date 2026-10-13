@@ -17,6 +17,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   package's own type hints. Before, mypy reported the module as installed but missing library
   stubs or a `py.typed` marker.
 
+### Changed
+
+- **Breaking.** `alert`: `variant` no longer picks an icon. An alert draws an icon only when
+  `icon` is given, as `button` does, and `variant` sets the colour alone. Before, an alert with
+  a `variant` and no `icon` asked `<c-icon>` for an icon named after the variant, including a
+  variant the alert does not accept. In a project whose `<c-icon>` looks icons up by name, a
+  message level added through `MESSAGE_TAGS` could raise and take the page down. To keep an icon
+  per variant, pass `icon`, or wrap `<c-alert>` in a component of your own that maps one to the
+  other.
+
 ### Fixed
 
 - `link`, `badge`, `kbd`, `status`, `icon` and `button` no longer put whitespace around

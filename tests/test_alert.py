@@ -144,15 +144,24 @@ class TestAlertIcon:
         icon_tag = html[html.index("<i ") : html.index("</i>")]
         assert "bi" in icon_tag and "bi-check" in icon_tag
 
-    def test_variant_with_no_icon_draws_c_icon_named_after_the_variant(
+    @pytest.mark.parametrize(
+        "variant", ["info", "success", "warning", "error", "primary"]
+    )
+    def test_variant_with_no_icon_draws_no_icon(
+        self, cotton_render_string_soup, variant
+    ):
+        soup = cotton_render_string_soup(f'<c-alert variant="{variant}">x</c-alert>')
+
+        assert soup.div.find("i") is None
+
+    def test_icon_is_drawn_as_given_whatever_the_variant(
         self, cotton_render_string_soup
     ):
-        soup = cotton_render_string_soup('<c-alert variant="success">Saved.</c-alert>')
+        soup = cotton_render_string_soup(
+            '<c-alert variant="success" icon="bi bi-check">Saved.</c-alert>'
+        )
 
-        icon = soup.div.find("i")
-        assert icon is not None
-        assert "success" in icon["class"]
-        assert icon["aria-hidden"] == "true"
+        assert soup.div.find("i")["class"] == ["bi", "bi-check"]
 
     def test_no_icon_and_no_variant_draws_no_icon(self, cotton_render_string_soup):
         soup = cotton_render_string_soup("<c-alert>x</c-alert>")
@@ -295,7 +304,7 @@ class TestAlertIconClass:
         self, cotton_render_string_soup
     ):
         soup = cotton_render_string_soup(
-            '<c-alert variant="success" class="mt-4">Saved.</c-alert>'
+            '<c-alert icon="bi bi-check" class="mt-4">Saved.</c-alert>'
         )
 
         assert "mt-4" in soup.div["class"]

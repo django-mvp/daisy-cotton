@@ -1,6 +1,6 @@
 {# @description A message banner for the result of an action, with an optional icon and an optional dismiss button. dismissible and delay both need Alpine.js on the page. Avoid delay on errors or on anything the reader must act on — the message can disappear before they've read it. See the toast entry for an alert shown with an icon and a dismissible alert. #}
-{# @prop variant:select['info','success','warning','error'] | description:"Colour variant. Also picks the icon when none is given." #}
-{# @prop icon:text | description:"Icon shown before the message, passed as the name of the icon component. Defaults to an icon named after variant." #}
+{# @prop variant:select['info','success','warning','error'] | description:"Colour variant. Leave empty for the default colour." #}
+{# @prop icon:text | description:"Icon shown before the message, passed as the name of the icon component. Always hidden from assistive technology." #}
 {# @prop soft:boolean | description:"Use the soft style." #}
 {# @prop outline:boolean | description:"Draw the alert as an outline." #}
 {# @prop dash:boolean | description:"Use a dashed border." #}
@@ -16,7 +16,7 @@
 {% trans "Dismiss" as dismiss_label %}
 {# djlint:off #}
 <div role="{{ role }}" class="alert {% variation variant "alert" "info,success,warning,error" %}{% if soft %} alert-soft{% endif %}{% if outline %} alert-outline{% endif %}{% if dash %} alert-dash{% endif %} {% responsive horizontal "alert-horizontal" %} {% responsive vertical "alert-vertical" %} {{ class }}"{% if dismissible %} x-data="{ show: true }" x-show="show" x-transition{% with ms=delay|add:0 %}{% if ms != "" %} x-init="setTimeout(() => show = false, {{ ms }})"{% endif %}{% endwith %}{% endif %} {{ attrs }}>
-  {% if icon %}<c-icon name="{{ icon }}" class="" aria-hidden="true" />{% elif variant %}<c-icon name="{{ variant }}" class="" aria-hidden="true" />{% endif %}
+  {% if icon %}<c-icon name="{{ icon }}" aria-hidden="true" only />{% endif %}
   {{ slot }}
   {% if dismissible %}<c-button type="button" ghost size="xs" circle x-on:click="show = false" aria-label="{{ dismiss_label }}"><span aria-hidden="true">✕</span></c-button>{% endif %}
 </div>
