@@ -37,6 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   so a screen reader announces the current choice in a menu of buttons such as a language or
   theme switcher. Before, only a link was marked, and a button showed as active without being
   announced. To announce it another way, such as `aria-pressed`, pass that attribute as well.
+- The README's requirements now ask for daisyUI 5.7 or later, where they said daisyUI 5. The
+  menu's `paged` attribute writes `menu-paged`, a class daisyUI added in 5.7.0, so on an earlier
+  release a paged menu rendered with no paged styling. Nothing in the package changed.
 
 ## [v0.1.3] - 2026-10-05
 
