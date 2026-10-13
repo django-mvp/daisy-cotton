@@ -209,6 +209,9 @@ non-mirror-paths = [
     # Reads the source of the navigation templates for scripts; there is no
     # Python module to mirror.
     "tests/test_navigation_markup.py",
+    # Renders the inline components between two characters; there is no
+    # Python module to mirror.
+    "tests/test_inline_whitespace.py",
 ]
 
 [tool.deptry]

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `link`, `badge`, `kbd`, `status`, `icon` and `button` no longer put whitespace around
+  themselves. Written next to punctuation, as in `(<c-badge text="new" />)` or
+  `<c-link href="/" text="the guide" />.`, the component now sits directly against it, where
+  before a space was drawn on either side.
+
 ## [v0.1.3] - 2026-10-05
 
 ### Changed

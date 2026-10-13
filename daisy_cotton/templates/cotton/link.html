@@ -1,3 +1,4 @@
+{% load daisy_cotton %}{% comment %}
 {# @description A styled anchor. Shows the text, then the default slot. Without an href it renders an anchor with no href attribute. #}
 {# @prop href:text | description:"Destination of the link. Without it no href attribute is written." #}
 {# @prop text:text | description:"Link text, shown before the default slot." #}
@@ -5,12 +6,13 @@
 {# @prop hover:boolean | description:"Underline the link only on hover." #}
 {# @prop class:text | description:"Extra classes added to the link." #}
 {# @slot — Content shown after the text. #}
-{% load daisy_cotton %}
-<c-vars href=""
+
+  Laid out to emit no whitespace around the element, with no final newline:
+  see "Components used inside a sentence" in CONTRIBUTING.md.
+{% endcomment %}<c-vars href=""
         text
         variant
         hover
-        class />
-<a{% if href %} href="{{ href }}"{% endif %}
+        class /><a{% if href %} href="{{ href }}"{% endif %}
    class="link {% variation variant "link" "neutral,primary,secondary,accent,info,success,warning,error" %}{% if hover %} link-hover{% endif %} {{ class }}"
    {{ attrs }}>{{ text }}{{ slot }}</a>

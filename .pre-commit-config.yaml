@@ -19,6 +19,9 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
+        # These components are used inside sentences, and a final newline in the
+        # template would be drawn as a space after them.
+        exclude: ^daisy_cotton/templates/cotton/(badge|button|icon|kbd|link|status)\.html$
       - id: check-yaml
 
   # uv-lock rewrites uv.lock when pyproject.toml has moved on. The build
