@@ -38,7 +38,7 @@ A developer builds a sidebar or a top-level list of links with `<c-menu>`. Items
 1. **Given** a menu with no attributes, **When** it renders, **Then** the root carries `menu` and lays out vertically.
 2. **Given** `size="sm"`, **When** it renders, **Then** the root carries `menu-sm`, and a size outside `xs`–`xl` adds no size class.
 3. **Given** `horizontal`, **When** it renders, **Then** the root carries `menu-horizontal`. Given `horizontal="lg"`, it carries `lg:menu-horizontal` instead.
-4. **Given** an item with a link and `active`, **When** it renders, **Then** the link carries `menu-active` and `aria-current="page"`.
+4. **Given** an item with a link and `active`, **When** it renders, **Then** the link carries `menu-active` and `aria-current="page"`. Given an item without a link and `active`, the button carries `menu-active` and `aria-current="true"`.
 5. **Given** a disabled item, **When** it renders, **Then** it carries `menu-disabled`, is announced as disabled, and cannot be reached with Tab.
 6. **Given** a titled group, **When** it renders, **Then** the title carries `menu-title` and is not an interactive element.
 7. **Given** a collapsible submenu, **When** it renders, **Then** it uses a native disclosure (`<details>` and `<summary>`), opens and closes with Enter or Space, and can be rendered open.
@@ -188,7 +188,7 @@ A developer puts a large horizontal menu at the top of a marketing or documentat
 **Menu**
 
 - **FR-011**: The menu MUST support `size`, a `horizontal` direction that is either always on or on from a named breakpoint, and the `paged` modifier.
-- **FR-012**: Menu items MUST support links and buttons, `active` (adding `menu-active` and, on a link, `aria-current="page"`) and `disabled` (adding `menu-disabled`).
+- **FR-012**: Menu items MUST support links and buttons, `active` (adding `menu-active`, with `aria-current="page"` on a link and `aria-current="true"` on a button) and `disabled` (adding `menu-disabled`).
 - **FR-013**: The menu MUST support titled groups (`menu-title`) and collapsible submenus through `<details>` and `<summary>`, which can be rendered open and nest at least two levels deep.
 
 **Navbar**

@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   themselves. Written next to punctuation, as in `(<c-badge text="new" />)` or
   `<c-link href="/" text="the guide" />.`, the component now sits directly against it, where
   before a space was drawn on either side.
+- `menu.item`: an active entry without an `href` now carries `aria-current="true"` on its button,
+  so a screen reader announces the current choice in a menu of buttons such as a language or
+  theme switcher. Before, only a link was marked, and a button showed as active without being
+  announced. To announce it another way, such as `aria-pressed`, pass that attribute as well.
 
 ## [v0.1.3] - 2026-10-05
 
