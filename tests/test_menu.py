@@ -84,11 +84,18 @@ class TestMenuItem:
         assert button.text.strip() == "Go"
         assert soup.find("a") is None
 
-    def test_active_button_has_the_class_but_no_aria_current(
+    def test_active_button_is_marked_current_within_its_set(
         self, cotton_render_string_soup
     ):
         button = cotton_render_string_soup('<c-menu.item text="Go" active />').button
         assert button["class"] == ["menu-active"]
+        assert button["aria-current"] == "true"
+
+    def test_button_that_is_not_active_has_no_active_marks(
+        self, cotton_render_string_soup
+    ):
+        button = cotton_render_string_soup('<c-menu.item text="Go" />').button
+        assert not button.get("class")
         assert "aria-current" not in button.attrs
 
     def test_disabled_link_is_a_role_link_without_href_or_tabindex(
