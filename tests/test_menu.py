@@ -272,6 +272,31 @@ class TestMenuTitle:
         assert li.b.text == "x"
 
 
+class TestMenuDivider:
+    def test_divider_is_an_empty_list_item(self, cotton_render_string_soup):
+        ul = cotton_render_string_soup(
+            '<c-menu><c-menu.item text="A" /><c-menu.divider />'
+            '<c-menu.item text="B" /></c-menu>'
+        ).ul
+        divider = ul.find_all("li", recursive=False)[1]
+        assert divider.decode_contents() == ""
+        assert not divider.get("class")
+
+    def test_divider_is_hidden_from_assistive_technology(
+        self, cotton_render_string_soup
+    ):
+        li = cotton_render_string_soup("<c-menu.divider />").li
+        assert li["aria-hidden"] == "true"
+
+    def test_class_and_attributes_land_on_the_list_item(
+        self, cotton_render_string_soup
+    ):
+        li = cotton_render_string_soup('<c-menu.divider class="mine" id="d" />').li
+        assert li["class"] == ["mine"]
+        assert li["id"] == "d"
+        assert li.decode_contents() == ""
+
+
 class TestMenuSubmenu:
     def test_renders_details_summary_and_a_list(self, cotton_render_string_soup):
         li = cotton_render_string_soup(

@@ -3,7 +3,7 @@
 {# @prop open:boolean | description:"Render the group expanded." #}
 {# @prop icon:text | description:"Icon shown before the label, passed as the name of the icon component." #}
 {# @prop class:text | description:"Extra classes added to the list item." #}
-{# @slot — The group's entries, as menu.item and menu.submenu components. #}
+{# @slot — The group's entries, as menu.item, menu.divider and menu.submenu components. #}
 {# @slot:text Inbox <c-badge size="sm">3</c-badge> — The summary's label as markup, after the icon, in place of the text attribute: a badge beside the label, or a label wrapped in a span a collapsing sidebar hides. #}
 <c-vars text open="" icon class />
 <li{% if class %} class="{{ class }}"{% endif %} {{ attrs }}>

@@ -27,7 +27,7 @@ Menu and navbar are the frame most pages sit in. The attribute choices made here
 
 ### User Story 1 - Menu (Priority: P1)
 
-A developer builds a sidebar or a top-level list of links with `<c-menu>`. Items can be links or buttons, can be grouped under titles, and can nest into submenus that open and close without any script. The current page's item is marked active, and an item can be disabled.
+A developer builds a sidebar or a top-level list of links with `<c-menu>`. Items can be links or buttons, can be grouped under titles or separated by a divider, and can nest into submenus that open and close without any script. The current page's item is marked active, and an item can be disabled.
 
 **Why this priority**: The menu is the most common navigation surface in an application. Navbar, dropdown and megamenu content is usually built from it.
 
@@ -43,6 +43,7 @@ A developer builds a sidebar or a top-level list of links with `<c-menu>`. Items
 6. **Given** a titled group, **When** it renders, **Then** the title carries `menu-title` and is not an interactive element.
 7. **Given** a collapsible submenu, **When** it renders, **Then** it uses a native disclosure (`<details>` and `<summary>`), opens and closes with Enter or Space, and can be rendered open.
 8. **Given** `paged`, **When** the menu renders, **Then** the root carries `menu-paged`.
+9. **Given** a divider between two items, **When** the menu renders, **Then** the divider is an empty list item, which daisyUI draws as a line, and it is hidden from assistive technology.
 
 ---
 
@@ -189,7 +190,7 @@ A developer puts a large horizontal menu at the top of a marketing or documentat
 
 - **FR-011**: The menu MUST support `size`, a `horizontal` direction that is either always on or on from a named breakpoint, and the `paged` modifier.
 - **FR-012**: Menu items MUST support links and buttons, `active` (adding `menu-active`, with `aria-current="page"` on a link and `aria-current="true"` on a button) and `disabled` (adding `menu-disabled`).
-- **FR-013**: The menu MUST support titled groups (`menu-title`) and collapsible submenus through `<details>` and `<summary>`, which can be rendered open and nest at least two levels deep.
+- **FR-013**: The menu MUST support titled groups (`menu-title`) and collapsible submenus through `<details>` and `<summary>`, which can be rendered open and nest at least two levels deep. It MUST support a divider between groups of entries, rendered as an empty list item hidden from assistive technology.
 
 **Navbar**
 

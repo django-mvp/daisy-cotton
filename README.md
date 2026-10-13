@@ -10,7 +10,7 @@ Built on [daisyUI](https://daisyui.com/) and [django-cotton](https://django-cott
 
 Pre-1.0: names, attributes and the set of classes a component emits can change between minor versions. The [CHANGELOG](https://github.com/django-mvp/daisy-cotton/blob/main/CHANGELOG.md) is how a project finds out what has landed.
 
-Eighty-two components are built so far: `accordion`, `alert`, `avatar`, `badge`, `breadcrumbs`, `button`, `card`, `carousel`, `chat`, `collapse`, `countdown`, `diff`, `divider`, `dock`, `drawer`, `dropdown`, `fab`, `footer`, `form.calendar`, `form.checkbox`, `form.fieldset`, `form.file-input`, `form.filter`, `form.input`, `form.label`, `form.otp`, `form.radio`, `form.range`, `form.rating`, `form.select`, `form.textarea`, `form.toggle`, `hero`, `hover-3d`, `hover-gallery`, `icon`, `indicator`, `join`, `kbd`, `link`, `list`, `loading`, `mask`, `megamenu`, `menu`, `modal`, `navbar`, `progress`, `radial-progress`, `skeleton`, `stack`, `stat`, `status`, `steps`, `swap`, `table`, `tabs`, `text-rotate`, `timeline`, `toast`, `tooltip` and `mockup.*`. Pagination has no component: daisyUI builds it from `join` and `btn` and gives it no class of its own, so write it with those two. Aura has no component either: it only decorates another element, so wrap the component to highlight in a `<div class="aura">` with daisyUI's style and size classes. Each one is documented live in the component gallery (`python manage.py runserver` from a checkout). More land as the need arises.
+Eighty-three components are built so far: `accordion`, `alert`, `avatar`, `badge`, `breadcrumbs`, `button`, `card`, `carousel`, `chat`, `collapse`, `countdown`, `diff`, `divider`, `dock`, `drawer`, `dropdown`, `fab`, `footer`, `form.calendar`, `form.checkbox`, `form.fieldset`, `form.file-input`, `form.filter`, `form.input`, `form.label`, `form.otp`, `form.radio`, `form.range`, `form.rating`, `form.select`, `form.textarea`, `form.toggle`, `hero`, `hover-3d`, `hover-gallery`, `icon`, `indicator`, `join`, `kbd`, `link`, `list`, `loading`, `mask`, `megamenu`, `menu`, `modal`, `navbar`, `progress`, `radial-progress`, `skeleton`, `stack`, `stat`, `status`, `steps`, `swap`, `table`, `tabs`, `text-rotate`, `timeline`, `toast`, `tooltip` and `mockup.*`. Pagination has no component: daisyUI builds it from `join` and `btn` and gives it no class of its own, so write it with those two. Aura has no component either: it only decorates another element, so wrap the component to highlight in a `<div class="aura">` with daisyUI's style and size classes. Each one is documented live in the component gallery (`python manage.py runserver` from a checkout). More land as the need arises.
 
 `<c-icon>` renders `name` as a literal CSS class string and resolves nothing itself — a project wanting name-based icon resolution provides its own override (see [docs/adr/0001](https://github.com/django-mvp/daisy-cotton/blob/main/docs/adr/0001-icon-is-an-extension-point.md)).
 
@@ -27,6 +27,17 @@ Eighty-two components are built so far: `accordion`, `alert`, `avatar`, `badge`,
 ```
 
 Django's `debug` level tag has no matching alert colour, so a debug message falls back to the plain alert.
+
+`<c-menu>` is filled with `<c-menu.item>`, `<c-menu.title>`, `<c-menu.submenu>` and `<c-menu.divider>`. The divider draws a line between groups of entries, so a menu built from components needs no hand-written list item for it:
+
+```django
+<c-menu>
+  <c-menu.item href="/profile/" text="Profile" />
+  <c-menu.item href="/settings/" text="Settings" />
+  <c-menu.divider />
+  <c-menu.item text="Sign out" type="submit" form="sign-out" />
+</c-menu>
+```
 
 ## Requirements
 
