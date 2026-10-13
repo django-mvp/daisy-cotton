@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   list item daisyUI draws as the line, hidden from assistive technology, so a menu composed from
   components no longer needs a hand-written `<li></li>`. `class` and other attributes land on the
   list item.
+- A `py.typed` marker, so a type checker in a project that imports `daisy_cotton` reads the
+  package's own type hints. Before, mypy reported the module as installed but missing library
+  stubs or a `py.typed` marker.
 
 ### Fixed
 
