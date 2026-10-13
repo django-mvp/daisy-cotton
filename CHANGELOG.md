@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `menu.divider`: a line between groups of entries in a menu or a submenu. It renders the empty
+  list item daisyUI draws as the line, hidden from assistive technology, so a menu composed from
+  components no longer needs a hand-written `<li></li>`. `class` and other attributes land on the
+  list item.
+
 ### Fixed
 
 - `link`, `badge`, `kbd`, `status`, `icon` and `button` no longer put whitespace around

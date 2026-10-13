@@ -1,0 +1,4 @@
+{# @description A line between groups of entries in a menu, used inside menu or menu.submenu. It is an empty list item, which daisyUI draws as the line, and is hidden from assistive technology so a screen reader does not announce a blank entry. Attributes other than the ones below land on the list item. #}
+{# @prop class:text | description:"Extra classes added to the list item." #}
+<c-vars class />
+<li{% if class %} class="{{ class }}"{% endif %} aria-hidden="true" {{ attrs }}></li>
