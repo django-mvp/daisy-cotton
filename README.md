@@ -14,7 +14,7 @@ Eighty-three components are built so far: `accordion`, `alert`, `avatar`, `badge
 
 `<c-icon>` renders `name` as a literal CSS class string and resolves nothing itself — a project wanting name-based icon resolution provides its own override (see [docs/adr/0001](https://github.com/django-mvp/daisy-cotton/blob/main/docs/adr/0001-icon-is-an-extension-point.md)).
 
-`<c-alert>` takes `variant` (info, success, warning, error), `soft`/`outline`/`dash` for style, and `horizontal`/`vertical` for direction, each accepting a breakpoint such as `sm`; a caller-given `role` replaces the default `role="alert"`, so `role="status"` gives a polite announcement instead of an interruption. Its icon and dismiss button are drawn by `<c-icon>` and `<c-button>`; the dismiss button's accessible name is the translatable "Dismiss" with its glyph hidden from assistive technology. `dismissible` and `delay` need [Alpine.js](https://alpinejs.dev/) on the page — this package doesn't ship or load it. Without Alpine, the alert still renders and reads fine, but the dismiss button does nothing and `delay` never fires.
+`<c-alert>` takes `variant` (info, success, warning, error), `soft`/`outline`/`dash` for style, and `horizontal`/`vertical` for direction, each accepting a breakpoint such as `sm`; a caller-given `role` replaces the default `role="alert"`, so `role="status"` gives a polite announcement instead of an interruption. `icon` draws an icon before the message, as it does on `<c-button>`, and an alert with no `icon` has none: `variant` sets the colour only. The icon and the dismiss button are drawn by `<c-icon>` and `<c-button>`; the dismiss button's accessible name is the translatable "Dismiss" with its glyph hidden from assistive technology. `dismissible` and `delay` need [Alpine.js](https://alpinejs.dev/) on the page — this package doesn't ship or load it. Without Alpine, the alert still renders and reads fine, but the dismiss button does nothing and `delay` never fires.
 
 `<c-toast>` pins its content to a corner or edge of the screen and has no role or live region of its own, so put alerts inside it and each keeps its own. A project rendering Django's messages framework writes:
 
@@ -26,7 +26,7 @@ Eighty-three components are built so far: `accordion`, `alert`, `avatar`, `badge
 </c-toast>
 ```
 
-Django's `debug` level tag has no matching alert colour, so a debug message falls back to the plain alert.
+Django's `debug` level tag has no matching alert colour, so a debug message falls back to the plain alert. The same goes for any level tag a project adds through `MESSAGE_TAGS`. An alert knows nothing about message levels, so a project that wants an icon per level, or only certain levels shown, writes its own component around `<c-alert>` and makes those choices there.
 
 `<c-menu>` is filled with `<c-menu.item>`, `<c-menu.title>`, `<c-menu.submenu>` and `<c-menu.divider>`. The divider draws a line between groups of entries, so a menu built from components needs no hand-written list item for it:
 
