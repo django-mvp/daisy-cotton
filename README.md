@@ -44,9 +44,9 @@ Django's `debug` level tag has no matching alert colour, so a debug message fall
 - Python 3.12+
 - Django 5.2, 6.0 or 6.1
 - django-cotton 2.6+
-- daisyUI 5, loaded by the project
+- daisyUI 5.7 or later, loaded by the project
 
-daisyUI is a hard requirement and this package does not ship it. Any project already running daisyUI satisfies it, through whatever Tailwind build the project already has.
+daisyUI is a hard requirement and this package does not ship it. Any project already running daisyUI 5.7 or later satisfies it, through whatever Tailwind build the project already has. The menu's `paged` attribute writes the class `menu-paged`, which daisyUI added in 5.7.0, so on an earlier release a paged menu comes out unstyled.
 
 ## Install
 
