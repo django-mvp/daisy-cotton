@@ -117,7 +117,7 @@ A developer adds a bottom navigation bar for small screens with `<c-dock>` and `
 1. **Given** `size="sm"`, **When** the dock renders, **Then** the root carries `dock dock-sm` and no classes daisyUI does not define for the dock.
 2. **Given** `class` or any other attribute on the dock, **When** it renders, **Then** the class is merged into the root and the rest reach the root element.
 3. **Given** a dock, **When** it renders, **Then** it is a navigation landmark with an accessible name the caller can override.
-4. **Given** an active link item, **When** it renders, **Then** it carries `dock-active` and `aria-current="page"`.
+4. **Given** an active link item, **When** it renders, **Then** it carries `dock-active` and `aria-current="page"`. Given an active item that is a button, it carries `dock-active` and `aria-current="true"`. Given an active drawer toggle, it carries `dock-active` alone.
 5. **Given** an item with an icon and `label`, **When** it renders, **Then** the icon comes from `<c-icon>`, the label sits inside `dock-label`, and the item's accessible name is the label.
 6. **Given** an item with neither `href` nor `toggle`, **When** it renders, **Then** it is a `<button type="button">`.
 
@@ -211,7 +211,7 @@ A developer puts a large horizontal menu at the top of a marketing or documentat
 **Dock**
 
 - **FR-021**: The dock root MUST carry only `dock`, its size class and the caller's classes, and MUST pass other attributes through. It drops the transparent background and blur it adds today.
-- **FR-022**: A dock item MUST render as a link, a drawer toggle or a `<button type="button">` as it does today, with `active` adding `dock-active` (and `aria-current="page"` on a link) and the label serving as its accessible name.
+- **FR-022**: A dock item MUST render as a link, a drawer toggle or a `<button type="button">` as it does today, with `active` adding `dock-active` (with `aria-current="page"` on a link, `aria-current="true"` on a button and no current mark on a drawer toggle) and the label serving as its accessible name.
 
 **Steps**
 

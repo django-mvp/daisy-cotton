@@ -1,5 +1,5 @@
 {# @description One item of a dock, used inside dock. Renders as a label that toggles a drawer when toggle is given, as a link when href is given, and as a button otherwise. An item with an icon and no label is named by an aria-label passed by the caller. #}
-{# @prop active:boolean | description:"Mark this item as the current destination." #}
+{# @prop active:boolean | description:"Mark this item as the current one. A link is announced as the current page and a button as the current item of its set. A drawer toggle is shown as active and announces nothing." #}
 {# @prop icon:text | description:"Icon shown above the label, passed as the name of the icon component." #}
 {# @prop label:text | description:"Text shown under the icon." #}
 {# @prop href:text | description:"Link address. Ignored when toggle is given." #}
@@ -24,7 +24,10 @@
     {% if label %}<span class="dock-label">{{ label }}</span>{% endif %}
   </a>
 {% else %}
-  <button type="button" class="{% if active %}dock-active{% endif %} {{ class }}" {{ attrs }}>
+  <button type="button"
+          class="{% if active %}dock-active{% endif %} {{ class }}"
+          {% if active %}aria-current="true"{% endif %}
+          {{ attrs }}>
     {% if icon %}<c-icon name="{{ icon }}" aria-hidden="true" only />{% endif %}
     {% if label %}<span class="dock-label">{{ label }}</span>{% endif %}
   </button>
