@@ -100,11 +100,18 @@ class TestDockItemButton:
         button = cotton_render_string_soup('<c-dock.item label="Add" />').button
         assert button["type"] == "button"
 
-    def test_active_button_has_dock_active_and_no_aria_current(
+    def test_active_button_is_marked_current_within_its_set(
         self, cotton_render_string_soup
     ):
         button = cotton_render_string_soup('<c-dock.item label="Add" active />').button
         assert "dock-active" in button["class"]
+        assert button["aria-current"] == "true"
+
+    def test_button_that_is_not_active_has_no_active_marks(
+        self, cotton_render_string_soup
+    ):
+        button = cotton_render_string_soup('<c-dock.item label="Add" />').button
+        assert "dock-active" not in button.get("class", [])
         assert not button.has_attr("aria-current")
 
     def test_label_sits_in_dock_label(self, cotton_render_string_soup):
