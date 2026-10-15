@@ -1,6 +1,15 @@
 # daisy-cotton
 
-[![Tests](https://github.com/django-mvp/daisy-cotton/actions/workflows/tests.yml/badge.svg)](https://github.com/django-mvp/daisy-cotton/actions/workflows/tests.yml) [![Coverage](https://codecov.io/gh/django-mvp/daisy-cotton/branch/main/graph/badge.svg)](https://codecov.io/gh/django-mvp/daisy-cotton) ![Python 3.12 | 3.13](https://img.shields.io/badge/python-3.12%20%7C%203.13-blue) ![Django 5.2 | 6.0 | 6.1](https://img.shields.io/badge/django-5.2%20%7C%206.0%20%7C%206.1-blue) [![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://github.com/django-mvp/daisy-cotton/blob/main/LICENSE)
+[![Tests](https://github.com/django-mvp/daisy-cotton/actions/workflows/tests.yml/badge.svg)](https://github.com/django-mvp/daisy-cotton/actions/workflows/tests.yml)
+[![Build](https://github.com/django-mvp/daisy-cotton/actions/workflows/build.yml/badge.svg)](https://github.com/django-mvp/daisy-cotton/actions/workflows/build.yml)
+[![Publish](https://github.com/django-mvp/daisy-cotton/actions/workflows/publish.yml/badge.svg)](https://github.com/django-mvp/daisy-cotton/actions/workflows/publish.yml)
+[![Coverage](https://codecov.io/gh/django-mvp/daisy-cotton/branch/main/graph/badge.svg)](https://codecov.io/gh/django-mvp/daisy-cotton)
+[![PyPI](https://img.shields.io/pypi/v/daisy-cotton)](https://pypi.org/project/daisy-cotton/)
+[![Development status](https://img.shields.io/pypi/status/daisy-cotton)](https://pypi.org/project/daisy-cotton/)
+[![Python](https://img.shields.io/pypi/pyversions/daisy-cotton)](https://pypi.org/project/daisy-cotton/)
+[![Django](https://img.shields.io/pypi/djversions/daisy-cotton)](https://pypi.org/project/daisy-cotton/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Licence](https://img.shields.io/github/license/django-mvp/daisy-cotton)](https://github.com/django-mvp/daisy-cotton/blob/main/LICENSE)
 
 Base daisyUI-styled django-cotton components: buttons, inputs, cards, alerts and the rest of an application's furniture
 
