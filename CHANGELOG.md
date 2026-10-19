@@ -29,6 +29,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `modal` now works inside a form. Its close button and backdrop were `<form method="dialog">`
+  elements, and a form inside another form is dropped by the HTML parser, so inside a form the
+  close button submitted that form instead of closing the dialog. Both are now
+  `<button type="button">` elements that call the dialog's `close()`, and the dialog holds no
+  form. Escape still closes it. A Cancel button of your own in the `actions` slot has the same
+  problem if it sits in a `method="dialog"` form: write it as
+  `<c-button type="button" onclick="this.closest('dialog').close()">Cancel</c-button>`.
 - `link`, `badge`, `kbd`, `status`, `icon` and `button` no longer put whitespace around
   themselves. Written next to punctuation, as in `(<c-badge text="new" />)` or
   `<c-link href="/" text="the guide" />.`, the component now sits directly against it, where

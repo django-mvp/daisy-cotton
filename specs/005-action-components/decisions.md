@@ -99,7 +99,7 @@ Escape and focus return runs in the accessibility run instead (T013), against th
 
 `<dialog open>` is the only way to show a dialog from markup alone. The browser then treats it as
 non-modal: Escape does not close it and focus is not trapped. The backdrop and the close button
-still close it, because both are `method="dialog"` forms. Scenario US2-6 asks only that the
+still close it, because both call the dialog's `close()`. Scenario US2-6 asks only that the
 modal is already shown, which this does. A project that needs the re-rendered dialog to be modal
 calls `showModal()` on load, which is the project's script, not the package's. The `open`
 description says so.

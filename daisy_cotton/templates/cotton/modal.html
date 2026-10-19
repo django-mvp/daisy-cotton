@@ -2,14 +2,14 @@
 {# @prop id:text | required | description:"Dialog id, used by a trigger to open it (showModal()) and close it (close()). Also names the dialog's heading when title is set." #}
 {# @prop title:text | description:"Heading shown in the box, and the dialog's accessible name when id is set. Give this or aria-label." #}
 {# @prop placement:select['top','middle','bottom','start','end'] | description:"Where the dialog sits on screen. Leave empty to centre it." #}
-{# @prop closable:boolean | description:"Show a close button in the top corner that closes the dialog without script." #}
+{# @prop closable:boolean | description:"Show a close button in the top corner that closes the dialog, inside a form or out of one." #}
 {# @prop open:boolean | description:"Render the dialog already shown (<dialog open>). This is not modal: Escape does not close it and focus is not trapped, though the backdrop still does. A trigger cannot open a dialog that is already shown this way. A project that needs a modal dialog shown on load calls showModal() itself." #}
 {# @prop content_class:text | description:"Extra classes added to the modal box." #}
 {# @prop actions:text | description:"Buttons shown in daisyUI's trailing actions row. Given as the actions slot." #}
 {# @prop class:text | description:"Extra classes added to the dialog." #}
 {# @slot Delete this item? This can't be undone. — The dialog body, shown in the box. #}
-{# @slot:actions <form method="dialog"><c-button>Cancel</c-button></form> — Buttons shown in daisyUI's trailing actions row. #}
-{# @trigger <c-button onclick="demo_modal.showModal()">Open</c-button> — a modal starts closed; any element opens it by calling showModal() on the dialog whose id matches the modal's id prop, and close() or a form with method="dialog" closes it. #}
+{# @slot:actions <c-button type="button" onclick="this.closest('dialog').close()">Cancel</c-button> — Buttons shown in daisyUI's trailing actions row. A button that only closes the dialog is type="button" and calls close(), so it cannot submit a form around the modal. #}
+{# @trigger <c-button onclick="demo_modal.showModal()">Open</c-button> — a modal starts closed; any element opens it by calling showModal() on the dialog whose id matches the modal's id prop, and close() closes it. Close from a type="button" button, not from a form with method="dialog": inside another form that inner form is dropped and its button submits the outer form instead. #}
 {% load i18n daisy_cotton %}
 <c-vars id=""
         title=""
@@ -26,15 +26,13 @@
         {{ attrs }}>
   <div class="modal-box {{ content_class }}">
     {% if closable %}
-      <form method="dialog" class="absolute end-2 top-2">
-        <c-button size="sm" circle ghost aria-label="{% trans "Close" %}"><span aria-hidden="true">✕</span></c-button>
-      </form>
+      <c-button type="button" onclick="this.closest('dialog').close()" size="sm" circle ghost class="absolute end-2 top-2" aria-label="{% trans "Close" %}"><span aria-hidden="true">✕</span></c-button>
     {% endif %}
     {% if title %}<h2{% if id %} id="{{ id }}-title"{% endif %} class="text-lg font-bold">{{ title }}</h2>{% endif %}
     {{ slot }}
     {% if actions %}<div class="modal-action">{{ actions }}</div>{% endif %}
   </div>
-  <form method="dialog" class="modal-backdrop">
-    <button>{% trans "Close" %}</button>
-  </form>
+  <div class="modal-backdrop">
+    <button type="button" onclick="this.closest('dialog').close()">{% trans "Close" %}</button>
+  </div>
 </dialog>
