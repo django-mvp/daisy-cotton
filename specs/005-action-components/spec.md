@@ -75,7 +75,7 @@ A developer needs a dialog for confirmations and short forms. It opens from a bu
 1. **Given** `<c-modal id="confirm" title="Delete item?">…</c-modal>`, **When** it renders, **Then** it is a `<dialog>` with id `confirm` and the `modal` class, its box contains the body, and the heading "Delete item?" names the dialog.
 2. **Given** a modal with an `actions` slot, **When** it renders, **Then** the actions appear in daisyUI's actions row at the foot of the box.
 3. **Given** `placement="bottom"`, **When** it renders, **Then** the dialog carries `modal-bottom`, and each of top, middle, bottom, start and end maps to its daisyUI class.
-4. **Given** `closable`, **When** it renders, **Then** a close button with the translatable accessible name "Close" closes the dialog without script.
+4. **Given** `closable`, **When** it renders, **Then** a close button with the translatable accessible name "Close" closes the dialog, whether or not the modal sits inside a form.
 5. **Given** an open modal, **When** the user presses Escape or clicks the backdrop, **Then** it closes and focus returns to the element that opened it.
 6. **Given** `open`, **When** the page loads, **Then** the modal is already shown, so a server can re-render a dialog after a failed form submission.
 7. **Given** the modal's gallery entry, **When** a developer opens it, **Then** each placement, the closable variant and a modal with actions can each be opened from a trigger button, and the entry shows how the trigger opens the dialog.
@@ -182,7 +182,7 @@ A developer needs a floating action button in a corner of the screen that reveal
 - **FR-012**: `<c-modal>` MUST render a `<dialog>` with daisyUI's modal box, the default slot as the box's body, and an `actions` slot rendered in daisyUI's actions row. *(US2)*
 - **FR-013**: `title` MUST render a heading inside the box that names the dialog for assistive technology. *(US2)*
 - **FR-014**: `placement` MUST map top, middle, bottom, start and end to daisyUI's modal placement classes, replacing `position`. `open` MUST render the modal already shown. *(US2)*
-- **FR-015**: The modal MUST close on Escape and on a click on the backdrop without script. `closable` MUST add a close button whose accessible name is the translatable string "Close". *(US2)*
+- **FR-015**: The modal MUST close on Escape and on a click on the backdrop. `closable` MUST add a close button whose accessible name is the translatable string "Close". The close button and the backdrop MUST be `type="button"` buttons that call the dialog's `close()` from an inline `onclick`, with no form inside the dialog: a `method="dialog"` form nested in a form around the modal is dropped by the HTML parser, and its button then submits the outer form. Escape is the browser's own and needs no script. *(US2)*
 - **FR-016**: The inner card, `size`, `icon`, `footer` and `footer_end` MUST be removed. The box MUST accept extra classes through `content_class`. *(US2)*
 
 **Dropdown**
@@ -216,7 +216,7 @@ A developer needs a floating action button in a corner of the screen that reveal
 
 - **SC-001**: Every class daisyUI lists for button, dropdown, FAB, modal and swap is reachable through a documented attribute or slot, except the classes that belong only to methods this spec does not use: the dropdown's `dropdown-content`, `dropdown-hover`, `dropdown-open` and `dropdown-close`, and the modal's `modal-toggle`, which daisyUI marks as legacy.
 - **SC-002**: `cotton_lint --warnings-as-errors` reports zero errors and zero warnings for all five components.
-- **SC-003**: All five components can be opened, used and closed with the keyboard alone, and none of them ships a script. The only script a project writes is the modal's trigger, and the gallery shows it.
+- **SC-003**: All five components can be opened, used and closed with the keyboard alone, and none of them ships a script. The modal's close button and backdrop carry one inline `onclick` that calls the dialog's `close()`. The only script a project writes is the modal's trigger, and the gallery shows it.
 - **SC-004**: Every gallery example of an icon-only control has an accessible name, and every component's gallery entry shows each of its variants and states.
 - **SC-005**: A developer upgrading from the previous button, dropdown or modal finds every removed or renamed attribute and its replacement in the CHANGELOG.
 

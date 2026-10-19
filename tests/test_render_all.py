@@ -47,7 +47,6 @@ class TestActionComponentsShipNoScript:
         "source",
         [
             '<c-button icon="x" text="Save" href="/a" disabled />',
-            '<c-modal id="m" title="T" closable open><c-slot name="actions">A</c-slot>Body</c-modal>',
             '<c-dropdown text="Options" placement="top end">Menu</c-dropdown>',
             '<c-swap label="L" rotate checked><c-slot name="on">1</c-slot><c-slot name="off">0</c-slot>'
             '<c-slot name="indeterminate">?</c-slot></c-swap>',
@@ -59,3 +58,12 @@ class TestActionComponentsShipNoScript:
         html = cotton_render_string(source)
         assert "<script" not in html
         assert not re.search(r"\son[a-z]+=", html)
+
+    def test_the_modal_carries_only_its_close_handler(self, cotton_render_string):
+        html = cotton_render_string(
+            '<c-modal id="m" title="T" closable open>'
+            '<c-slot name="actions">A</c-slot>Body</c-modal>'
+        )
+        assert "<script" not in html
+        handlers = re.findall(r"\s(on[a-z]+)=\"([^\"]*)\"", html)
+        assert handlers == [("onclick", "this.closest('dialog').close()")] * 2

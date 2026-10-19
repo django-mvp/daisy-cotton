@@ -122,7 +122,7 @@ class TestModalClosable:
             '<c-modal id="confirm" closable>Body</c-modal>'
         )
         box = soup.find(class_="modal-box")
-        button = box.find("form", attrs={"method": "dialog"}).find("button")
+        button = box.find("button")
         assert button is not None
         assert button.has_attr("aria-label") and button["aria-label"]
         assert button.find(attrs={"aria-hidden": "true"}) is not None
@@ -130,8 +130,7 @@ class TestModalClosable:
     def test_without_closable_there_is_no_close_button(self, cotton_render_string_soup):
         soup = cotton_render_string_soup('<c-modal id="confirm">Body</c-modal>')
         box = soup.find(class_="modal-box")
-        form = box.find("form", attrs={"method": "dialog"})
-        assert form is None or form.find("button") is None
+        assert box.find("button") is None
 
 
 class TestModalTranslatableStrings:
@@ -185,21 +184,42 @@ class TestModalWithoutId:
         assert "id=" not in html.split(">", 1)[0]
 
 
+CLOSE_HANDLER = "this.closest('dialog').close()"
+
+
 class TestModalCloseMechanics:
-    def test_the_close_button_is_a_btn_inside_a_dialog_form(
+    """The modal closes without a form of its own, so it works inside a form.
+
+    A form inside another form is dropped by the HTML parser, which turned the
+    close controls into submit buttons of whatever form wrapped the modal.
+    """
+
+    def test_the_dialog_holds_no_form(self, cotton_render_string_soup):
+        soup = cotton_render_string_soup(
+            '<form method="get"><c-modal id="m" title="T" closable>Body'
+            '<c-slot name="actions"><c-button>OK</c-button></c-slot>'
+            "</c-modal></form>"
+        )
+        assert soup.find("dialog").find("form") is None
+
+    def test_the_close_button_is_a_btn_that_closes_its_dialog(
         self, cotton_render_string_soup
     ):
         soup = cotton_render_string_soup('<c-modal id="m" closable>Body</c-modal>')
-        box = soup.find(class_="modal-box")
-        close = box.find("form", attrs={"method": "dialog"}).find("button")
+        close = soup.find(class_="modal-box").find("button")
         assert "btn" in close["class"]
-        form = close.find_parent("form")
-        assert form["method"] == "dialog"
-        assert "modal-backdrop" not in (form.get("class") or [])
+        assert close["type"] == "button"
+        assert close["onclick"] == CLOSE_HANDLER
 
-    def test_the_backdrop_is_daisyuis_dialog_form(self):
-        html = render('<c-modal id="m">Body</c-modal>')
-        assert '<form method="dialog" class="modal-backdrop">' in html
+    def test_the_backdrop_is_a_button_that_closes_its_dialog(
+        self, cotton_render_string_soup
+    ):
+        soup = cotton_render_string_soup('<c-modal id="m">Body</c-modal>')
+        backdrop = soup.find(class_="modal-backdrop")
+        assert backdrop.parent.name == "dialog"
+        button = backdrop.find("button")
+        assert button["type"] == "button"
+        assert button["onclick"] == CLOSE_HANDLER
 
     def test_a_title_without_an_id_writes_no_labelledby(self):
         html = render('<c-modal title="T">Body</c-modal>')
@@ -211,6 +231,5 @@ class TestModalCloseMechanics:
         soup = cotton_render_string_soup(
             '<c-modal id="m" closable class="my-modal">Body</c-modal>'
         )
-        box = soup.find(class_="modal-box")
-        close = box.find("form", attrs={"method": "dialog"}).find("button")
+        close = soup.find(class_="modal-box").find("button")
         assert "my-modal" not in close["class"]
