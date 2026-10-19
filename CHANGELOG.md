@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.0] - 2026-10-19
+
 ### Added
 
 - `menu.divider`: a line between groups of entries in a menu or a submenu. It renders the empty
