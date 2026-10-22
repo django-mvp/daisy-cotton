@@ -182,7 +182,7 @@ Every icon-only control has an `aria-label`, every loading, progress and radial 
 ```text
 specs/008-feedback-components/
 ├── spec.md, decisions.md      # on main
-├── plan.md, research.md, tasks.md, progress.md, feature-state.json
+├── plan.md, research.md, tasks.md
 ```
 
 ### Source Code

@@ -85,9 +85,7 @@ specs/002-gallery-lint/
 ├── decisions.md
 ├── plan.md
 ├── research.md
-├── tasks.md
-├── progress.md
-└── feature-state.json
+└── tasks.md
 ```
 
 ### Source Code (repository root)

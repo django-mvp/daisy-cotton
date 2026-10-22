@@ -129,7 +129,7 @@ Every template carries `@description`, a `@prop` per `<c-vars>` name (fixed-valu
 ```text
 specs/003-navigation-components/
 ├── spec.md, decisions.md      # on main
-├── plan.md, research.md, tasks.md, progress.md, feature-state.json
+├── plan.md, research.md, tasks.md
 ```
 
 ### Source Code

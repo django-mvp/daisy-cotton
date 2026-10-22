@@ -180,7 +180,7 @@ Every image has `alt`, every icon-only control an `aria-label`, every named regi
 ```text
 specs/007-animated-display-components/
 ├── spec.md, decisions.md      # on main
-├── plan.md, research.md, tasks.md, progress.md, feature-state.json
+├── plan.md, research.md, tasks.md
 ```
 
 ### Source Code

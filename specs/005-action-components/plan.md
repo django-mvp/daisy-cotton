@@ -179,7 +179,7 @@ Every template carries `@description`, a `@prop` per `<c-vars>` name and `@slot`
 ```text
 specs/005-action-components/
 ├── spec.md, decisions.md      # on main
-├── plan.md, research.md, tasks.md, progress.md, feature-state.json
+├── plan.md, research.md, tasks.md
 ```
 
 ### Source Code
