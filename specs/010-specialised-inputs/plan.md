@@ -177,7 +177,7 @@ The bare previews cover what the declared props reach through the gallery's cont
 ```text
 specs/010-specialised-inputs/
 ├── spec.md, decisions.md      # on main
-├── plan.md, research.md, tasks.md, progress.md, feature-state.json
+├── plan.md, research.md, tasks.md
 ```
 
 ### Source Code

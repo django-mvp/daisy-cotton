@@ -182,7 +182,7 @@ Each control's `@description` names the fieldset entry as where its labelled, di
 ```text
 specs/009-form-controls/
 ├── spec.md, decisions.md      # on main
-├── plan.md, research.md, tasks.md, progress.md, feature-state.json
+├── plan.md, research.md, tasks.md
 ```
 
 ### Source Code

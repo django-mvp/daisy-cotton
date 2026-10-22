@@ -145,7 +145,7 @@ Folder components' pages are at `/django-cotton-gallery/<name>/index/` until #96
 ```text
 specs/004-layout-components/
 ├── spec.md, decisions.md      # on main
-├── plan.md, research.md, tasks.md, progress.md, feature-state.json
+├── plan.md, research.md, tasks.md
 ```
 
 ### Source Code

@@ -51,9 +51,7 @@ specs/001-gallery-demo/
 ├── decisions.md
 ├── plan.md
 ├── research.md
-├── tasks.md
-├── progress.md
-└── feature-state.json
+└── tasks.md
 ```
 
 ### Source Code (repository root)
