@@ -481,14 +481,14 @@ wheels = [
 
 [[package]]
 name = "django-cotton"
-version = "2.8.0"
+version = "2.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1f/8f/ca91ebdea636c0466ef517d0d8fc9f7d08290e4614bbc9a48aa0bb5a0141/django_cotton-2.8.0.tar.gz", hash = "sha256:fe60182f143e89296db2384da9818da4662a1b3aa8dd86f1b4eeb5e884015ea8", size = 35534, upload-time = "2026-10-14T10:59:16.235Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/75/51/6b858f9d83f59f0e78cc395bc721b393836b0776b5f3e7c1e8817e5cd5fd/django_cotton-2.9.0.tar.gz", hash = "sha256:58d4f76bb2acff4b8b937be257b81b8c9a21877edc95cb1e8decd16c0f0bca84", size = 39865, upload-time = "2026-11-08T19:20:19.538Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/27/52/18a6523f88b642691282e4eac97bc76df2a53af8ca69fd028f11662b9c77/django_cotton-2.8.0-py3-none-any.whl", hash = "sha256:f6142988ba957812a7272270bc06eedf8df27bbf76e7b7f22ea694fa9b9c9505", size = 34107, upload-time = "2026-10-14T10:59:17.11Z" },
+    { url = "https://files.pythonhosted.org/packages/56/bd/208fbd20828530c81da3d990d902b4d0af7251a0ee5756bc7edc54151964/django_cotton-2.9.0-py3-none-any.whl", hash = "sha256:b3ed75d4fd05a8b5cd8f36acfe8d4931280b66be9c6aa0ad75f696dc906fac78", size = 38927, upload-time = "2026-11-08T19:20:20.588Z" },
 ]
 
 [[package]]
