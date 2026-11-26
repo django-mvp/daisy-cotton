@@ -3,11 +3,17 @@
 from pathlib import Path
 
 import pytest
+from django.template import TemplateDoesNotExist
+from django.template.loader import get_template
+from django_cotton_gallery.core.catalog.scanner import scan
+from django_cotton_gallery.core.schemas import CatalogConfig
 
+import daisy_cotton
 from daisy_cotton.catalog import ComponentCatalog, ComponentNotFound
 
 FIRST = "tests.fixtures.catalog_first"
 SECOND = "tests.fixtures.catalog_second"
+PACKAGE_COTTON = Path(daisy_cotton.__path__[0]).resolve() / "templates" / "cotton"
 FIRST_PAGES = (
     Path(__file__).parent / "fixtures" / "catalog_first" / "templates" / "pages"
 )
@@ -510,3 +516,36 @@ class TestComponentCatalogUses:
         catalog = ComponentCatalog()
 
         assert catalog.uses(catalog.get("badge")) == [page.resolve()]
+
+
+class TestComponentCatalogAgreesWithDjango:
+    """The catalog under the project's own settings, with no TEMPLATES override."""
+
+    @staticmethod
+    def rendered_path(name, cotton_dir="cotton"):
+        base = f"{cotton_dir}/{name.replace('.', '/')}"
+        try:
+            template = get_template(f"{base}.html")
+        except TemplateDoesNotExist:
+            template = get_template(f"{base}/index.html")
+        return Path(template.origin.name).resolve()
+
+    def test_every_listed_component_resolves_to_the_listed_path(self):
+        components = ComponentCatalog().components()
+
+        assert components
+        for component in components:
+            assert self.rendered_path(component.name) == component.path, component.name
+
+    def test_the_components_are_the_ones_the_gallery_finds(self):
+        config = CatalogConfig(cotton_dir=PACKAGE_COTTON)
+
+        gallery = {component.tag_path for component in scan(config)}
+        listed = {
+            c.name
+            for c in ComponentCatalog().components()
+            if c.package == "daisy_cotton"
+        }
+
+        assert gallery
+        assert listed == gallery
