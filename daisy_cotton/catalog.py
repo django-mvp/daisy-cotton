@@ -15,8 +15,14 @@ from django.template.backends.django import DjangoTemplates
 
 from daisy_cotton.annotations import AnnotationParser, ParsedComponent
 
+try:
+    from django_cotton.templatetags._component import CottonComponentNode
+except ImportError:  # pragma: no cover - django-cotton is a hard dependency
+    CottonComponentNode = None
+
 __all__ = ["Component", "ComponentCatalog", "ComponentNotFound"]
 
+DEFAULT_COTTON_DIR = "cotton"
 PROJECT_PACKAGE = "project"
 NO_DESCRIPTION = "—"
 FIRST_SENTENCE = re.compile(r"(.+?[.!?])(?=\s+[A-Z])", re.S)
@@ -84,22 +90,21 @@ class ComponentNotFound(LookupError):
         self.suggestions = suggestions
 
 
-@dataclass(frozen=True)
-class Candidate:
-    """A template file that could render a component, before overrides are settled."""
-
-    folder_index: int
-    is_file: bool
-    path: Path
-    package: str
-
-
 class ComponentCatalog:
-    """Every component the project can render, found as the loaders find them."""
+    """Every component the project can render, found as the loaders find them.
+
+    Components are searched where django-cotton looks, in its order: the
+    configured ``COTTON_DIR`` first, then, in django-cotton 2.9 and later, the
+    default ``cotton/`` folder. Each place is searched across every template
+    folder in loader order before the next one.
+
+    Attributes:
+        cotton_dir: The ``COTTON_DIR`` setting, ``cotton`` when unset.
+        snake_cased: The ``COTTON_SNAKE_CASED_NAMES`` setting, on when unset.
+    """
 
     def __init__(self) -> None:
-        """Read the settings that say where components live and how they are named."""
-        self.cotton_dir: str = getattr(settings, "COTTON_DIR", "cotton")
+        self.cotton_dir: str = getattr(settings, "COTTON_DIR", DEFAULT_COTTON_DIR)
         self.snake_cased: bool = getattr(settings, "COTTON_SNAKE_CASED_NAMES", True)
 
     def folders(self) -> list[Path]:
@@ -121,21 +126,50 @@ class ComponentCatalog:
             Components sorted by name.
         """
         packages = self.package_labels()
-        candidates: dict[str, list[Candidate]] = {}
-        for index, folder in enumerate(self.folders()):
+        copies: dict[str, list[tuple[str, Path]]] = {}
+        names: set[str] = set()
+        for folder in self.folders():
             package = packages.get(folder, PROJECT_PACKAGE)
-            root = folder / self.cotton_dir
-            for path in sorted(root.rglob("*.html")):
-                located = self.locate(path.relative_to(root))
-                if located is not None:
-                    name, is_file = located
-                    candidates.setdefault(name, []).append(
-                        Candidate(index, is_file, path, package)
-                    )
-        return [
-            self.build_component(name, found)
-            for name, found in sorted(candidates.items())
-        ]
+            for directory in self.component_dirs():
+                root = folder / directory
+                for path in sorted(root.rglob("*.html")):
+                    relative = path.relative_to(root)
+                    name = self.locate(relative, directory != self.cotton_dir)
+                    if name is not None:
+                        names.add(name)
+                        key = f"{directory}/{relative.as_posix()}"
+                        copies.setdefault(key, []).append((package, path))
+        return [self.build_component(name, copies) for name in sorted(names)]
+
+    def component_dirs(self) -> tuple[str, ...]:
+        """Template sub-folders that components are loaded from, in lookup order.
+
+        Returns:
+            The configured folder, then ``cotton`` when django-cotton falls back
+            to it and it is a different folder.
+        """
+        if len(self.candidate_paths("x")) > 2:
+            return (self.cotton_dir, DEFAULT_COTTON_DIR)
+        return (self.cotton_dir,)
+
+    def candidate_paths(self, name: str) -> tuple[str, ...]:
+        """Template paths a tag with this name is rendered from, best first.
+
+        Uses django-cotton's own list when the installed version has one (2.9
+        and later), so the catalog follows its fallback to ``cotton/``. Older
+        versions load the configured file, then its ``index.html``.
+
+        Args:
+            name: Dotted component name as it is written in the tag.
+
+        Returns:
+            Template paths in the order django-cotton tries them.
+        """
+        probe = getattr(CottonComponentNode, "_candidate_template_paths", None)
+        if probe is not None:
+            return probe(name, None)
+        base = f"{self.cotton_dir}/{name.replace('.', '/')}"
+        return (f"{base}.html", f"{base}/index.html")
 
     def search(
         self, term: str = "", text: str = "", package: str = ""
@@ -143,8 +177,7 @@ class ComponentCatalog:
         """Components that match every filter given.
 
         Args:
-            term: Part of the name, ignoring case. Hyphens match underscores when
-                snake-cased names are on.
+            term: Part of the name, ignoring case. Hyphens match underscores.
             text: Words the description must contain, ignoring case.
             package: Exact package label.
 
@@ -165,8 +198,7 @@ class ComponentCatalog:
         """Find the component a tag with this name renders.
 
         Args:
-            name: Dotted name. Case is ignored, and hyphens match underscores when
-                snake-cased names are on.
+            name: Dotted name. Case is ignored, and hyphens match underscores.
 
         Returns:
             The matching component.
@@ -189,8 +221,8 @@ class ComponentCatalog:
     def uses(self, component: Component) -> list[Path]:
         """Page templates that reference the component by tag.
 
-        Templates inside any folder's cotton directory are not counted, and a
-        dynamic ``<c-component is="...">`` reference cannot be matched to a name.
+        Templates inside any folder components are loaded from are not counted,
+        and a dynamic ``<c-component is="...">`` reference cannot be matched to a name.
 
         Args:
             component: The component to look for.
@@ -201,9 +233,9 @@ class ComponentCatalog:
         wanted = self.normalise(component.name)
         found: set[Path] = set()
         for folder in self.folders():
-            components_root = folder / self.cotton_dir
+            roots = [folder / directory for directory in self.component_dirs()]
             for path in folder.rglob("*.html"):
-                if path.is_relative_to(components_root) or path in found:
+                if path in found or any(path.is_relative_to(r) for r in roots):
                     continue
                 try:
                     text = path.read_text(encoding="utf-8")
@@ -222,9 +254,8 @@ class ComponentCatalog:
         return False
 
     def normalise(self, value: str) -> str:
-        """Lower-case a name, reading hyphens as underscores in snake-cased names."""
-        value = value.lower()
-        return value.replace("-", "_") if self.snake_cased else value
+        """Lower-case a name and read hyphens as underscores."""
+        return value.lower().replace("-", "_")
 
     def collect_folders(self, loaders, found: list[Path]) -> None:
         """Append each loader's folders to ``found``, including wrapped loaders."""
@@ -245,29 +276,43 @@ class ComponentCatalog:
             for config in apps.get_app_configs()
         }
 
-    def locate(self, relative: Path) -> tuple[str, bool] | None:
-        """Name and kind of a file below the cotton folder, or None if no tag can."""
+    def locate(self, relative: Path, fallback: bool) -> str | None:
+        """Name of the component a file below a component folder renders.
+
+        Args:
+            relative: The file's path below the folder.
+            fallback: Whether the folder is the default ``cotton`` one that
+                django-cotton falls back to, which only holds snake-cased names.
+
+        Returns:
+            The dotted name, or None when no tag can name the file.
+        """
         parts = [*relative.parts[:-1], relative.stem]
         if any(part.startswith("_") or "." in part for part in parts):
             return None
-        if self.snake_cased and any("-" in part for part in parts):
+        if (self.snake_cased or fallback) and any("-" in part for part in parts):
             return None
         is_file = relative.name != "index.html" or len(parts) == 1
-        return ".".join(parts if is_file else parts[:-1]), is_file
+        return ".".join(parts if is_file else parts[:-1])
 
-    @staticmethod
-    def build_component(name: str, found: list[Candidate]) -> Component:
-        """Pick the copy that renders and record the packages it overrides."""
-        winner = next((c for c in found if c.is_file), found[0])
-        overrides: list[str] = []
-        for candidate in found:
-            if (
-                candidate.package != winner.package
-                and candidate.package not in overrides
-            ):
-                overrides.append(candidate.package)
+    def build_component(
+        self, name: str, copies: dict[str, list[tuple[str, Path]]]
+    ) -> Component:
+        """Pick the copy that renders and record the packages it overrides.
+
+        Args:
+            name: Dotted component name.
+            copies: Every file found, by template path, in loader order.
+
+        Returns:
+            The component, rendered from the first path django-cotton tries that
+            has a file, in the first folder that holds it.
+        """
+        found = [c for path in self.candidate_paths(name) for c in copies.get(path, [])]
+        package, path = found[0]
+        overrides = tuple(dict.fromkeys(p for p, _ in found if p != package))
         try:
-            source = winner.path.read_text(encoding="utf-8")
+            source = path.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):
             source = ""
-        return Component(name, winner.path, winner.package, tuple(overrides), source)
+        return Component(name, path, package, overrides, source)

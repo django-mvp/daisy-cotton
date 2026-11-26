@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
+from django_cotton.templatetags._component import CottonComponentNode
 from django_cotton_gallery.core.catalog.scanner import scan
 from django_cotton_gallery.core.schemas import CatalogConfig
 
@@ -241,12 +242,27 @@ class TestComponentCatalogComponents:
         assert "notes" not in listed
         assert "styles" not in listed
 
-    def test_reads_only_the_configured_cotton_dir(self, configure, project_dir):
+    def test_reads_the_configured_cotton_dir_then_falls_back_to_cotton(
+        self, configure, project_dir
+    ):
         write(project_dir, "components/chosen.html")
-        write(project_dir, "cotton/ignored.html")
+        write(project_dir, "cotton/fallback.html")
+        write(project_dir, "other/ignored.html")
         configure(COTTON_DIR="components")
 
-        assert names(ComponentCatalog().components()) == ["chosen"]
+        listed = names(ComponentCatalog().components())
+
+        assert {"chosen", "fallback", "badge"} <= set(listed)
+        assert "ignored" not in listed
+
+    def test_a_configured_copy_overrides_the_cotton_one(self, configure, project_dir):
+        chosen = write(project_dir, "components/badge.html")
+        configure(COTTON_DIR="components")
+
+        badge = next(c for c in ComponentCatalog().components() if c.name == "badge")
+
+        assert badge.path == chosen.resolve()
+        assert badge.overrides == ("catalog_first",)
 
     def test_an_undecodable_file_is_listed_without_a_summary(
         self, configure, project_dir
@@ -323,10 +339,12 @@ class TestComponentCatalogSearch:
 
         assert "hover_gallery" in names(ComponentCatalog().search("hover-gallery"))
 
-    def test_hyphen_and_underscore_differ_when_snake_casing_is_off(self, configure):
+    def test_hyphen_finds_the_underscored_file_when_snake_casing_is_off(
+        self, configure
+    ):
         configure(COTTON_SNAKE_CASED_NAMES=False)
 
-        assert "hover_gallery" not in names(ComponentCatalog().search("hover-gallery"))
+        assert "hover_gallery" in names(ComponentCatalog().search("hover-gallery"))
 
     def test_text_keeps_components_whose_description_contains_the_words(
         self, configure
@@ -382,11 +400,12 @@ class TestComponentCatalogGet:
 
         assert ComponentCatalog().get("Card.Title").name == "card.title"
 
-    def test_a_hyphen_is_not_an_underscore_when_snake_casing_is_off(self, configure):
+    def test_a_hyphen_finds_the_underscored_file_when_snake_casing_is_off(
+        self, configure
+    ):
         configure(COTTON_SNAKE_CASED_NAMES=False)
 
-        with pytest.raises(ComponentNotFound):
-            ComponentCatalog().get("hover-gallery")
+        assert ComponentCatalog().get("hover-gallery").name == "hover_gallery"
 
     def test_an_unknown_name_suggests_the_closest_names(self, configure):
         configure()
@@ -508,10 +527,13 @@ class TestComponentCatalogUses:
 
         assert used == sorted(used)
 
-    def test_only_the_configured_cotton_dir_is_excluded(self, configure, project_dir):
+    def test_every_folder_components_load_from_is_excluded(
+        self, configure, project_dir
+    ):
         write(project_dir, "components/badge.html")
         write(project_dir, "components/user.html", "<c-badge />\n")
-        page = write(project_dir, "cotton/page.html", "<c-badge />\n")
+        write(project_dir, "cotton/fallback_user.html", "<c-badge />\n")
+        page = write(project_dir, "pages/page.html", "<c-badge />\n")
         configure(COTTON_DIR="components")
         catalog = ComponentCatalog()
 
@@ -519,23 +541,61 @@ class TestComponentCatalogUses:
 
 
 class TestComponentCatalogAgreesWithDjango:
-    """The catalog under the project's own settings, with no TEMPLATES override."""
+    """Each listed name resolves to the file django-cotton renders for its tag."""
 
     @staticmethod
-    def rendered_path(name, cotton_dir="cotton"):
-        base = f"{cotton_dir}/{name.replace('.', '/')}"
-        try:
-            template = get_template(f"{base}.html")
-        except TemplateDoesNotExist:
-            template = get_template(f"{base}/index.html")
-        return Path(template.origin.name).resolve()
+    def rendered_path(name):
+        for candidate in CottonComponentNode._candidate_template_paths(name, None):
+            try:
+                return Path(get_template(candidate).origin.name).resolve()
+            except TemplateDoesNotExist:
+                continue
+        return None
 
-    def test_every_listed_component_resolves_to_the_listed_path(self):
+    def assert_every_listed_name_agrees(self):
         components = ComponentCatalog().components()
-
         assert components
         for component in components:
             assert self.rendered_path(component.name) == component.path, component.name
+        return {c.name: c for c in components}
+
+    def test_every_listed_component_resolves_to_the_listed_path(self):
+        self.assert_every_listed_name_agrees()
+
+    def test_agrees_where_components_are_provided_more_than_once(
+        self, configure, project_dir
+    ):
+        write(project_dir, "cotton/card.html")
+        write(project_dir, "cotton/stat/index.html")
+        write(project_dir, "cotton/stat.html")
+        configure()
+
+        listed = self.assert_every_listed_name_agrees()
+
+        assert listed["card"].overrides
+        assert listed["wide"].package == "catalog_second"
+
+    def test_agrees_when_components_live_in_a_configured_folder(
+        self, configure, project_dir
+    ):
+        override = write(project_dir, "components/card.html")
+        write(project_dir, "components/only_here.html")
+        configure(COTTON_DIR="components")
+
+        listed = self.assert_every_listed_name_agrees()
+
+        assert listed["card"].path == override.resolve()
+        assert listed["card"].overrides == ("catalog_first", "catalog_second")
+        assert listed["badge"].package == "catalog_first"
+        assert listed["wide"].package == "catalog_second"
+        assert "only_here" in listed
+
+    def test_agrees_when_snake_casing_is_off(self, configure):
+        configure(COTTON_SNAKE_CASED_NAMES=False)
+
+        listed = self.assert_every_listed_name_agrees()
+
+        assert "hover_gallery" in listed
 
     def test_the_components_are_the_ones_the_gallery_finds(self):
         config = CatalogConfig(cotton_dir=PACKAGE_COTTON)
