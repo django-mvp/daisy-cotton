@@ -4,6 +4,6 @@
 {# @prop class:text | description:"Extra classes added to the steps." #}
 {# @slot <c-steps.step text="Register" variant="primary" /><c-steps.step text="Choose plan" variant="primary" current /><c-steps.step text="Purchase" content="?" /><c-steps.step text="Receive" icon="bi bi-gift" /> — The steps, as steps.step components. #}
 {% load daisy_cotton %}
-<c-vars vertical horizontal class />
-<ol class="steps{% if vertical %} {% responsive vertical "steps-vertical" %}{% endif %}{% if horizontal %} {% responsive horizontal "steps-horizontal" %}{% endif %} {{ class }}"
+<c-vars vertical horizontal class:merge="steps" />
+<ol class="{{ class }}{% if vertical %} {% responsive vertical "steps-vertical" %}{% endif %}{% if horizontal %} {% responsive horizontal "steps-horizontal" %}{% endif %}"
     {{ attrs }}>{{ slot }}</ol>

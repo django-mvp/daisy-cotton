@@ -27,10 +27,11 @@ COTTON_DIR = Path(next(iter(daisy_cotton.__path__))).resolve() / "templates" / "
 CVARS = re.compile(r"<c-vars\b(?P<body>.*?)/?>", re.DOTALL)
 
 # An attribute value is a quoted string, which may itself contain a quoted
-# `{% trans "..." %}` default, or a bare token such as `False`.
+# `{% trans "..." %}` default, or a bare token such as `False`. `class:merge`
+# declares `class`: the suffix tells Cotton to merge the caller's classes in.
 VALUE = r"""(?:"(?:\{%.*?%\}|[^"])*"|'(?:\{%.*?%\}|[^'])*'|[^\s"'<>=]+)"""
 DECLARATION = re.compile(
-    rf"(?P<name>:?[A-Za-z_][\w-]*)(?:\s*=\s*(?:{VALUE}))?", re.DOTALL
+    rf"(?P<name>:?[A-Za-z_][\w-]*)(?::merge)?(?:\s*=\s*(?:{VALUE}))?", re.DOTALL
 )
 
 EXPRESSION = re.compile(r"\{\{.*?\}\}|\{%.*?%\}", re.DOTALL)
@@ -111,6 +112,9 @@ class TestTheGuardItselfReadsDeclarations:
 
     def test_an_unquoted_default_is_one_declaration(self):
         assert declared_names(" row=False wrap=False ") == ["row", "wrap"]
+
+    def test_a_merged_class_is_one_declaration_of_class(self):
+        assert declared_names(' size class:merge="dock" ') == ["size", "class"]
 
     def test_a_dynamic_declaration_drops_its_colon(self):
         assert declared_names(""" :size_opts="{'sm': 'x'}" """) == ["size_opts"]

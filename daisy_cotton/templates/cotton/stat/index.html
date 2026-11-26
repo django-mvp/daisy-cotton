@@ -10,8 +10,8 @@
 {# @slot:value — The value in place of the attribute, for rich content. #}
 {# @slot:desc — Description text in place of the attribute, for rich content. #}
 {# @slot:actions <button class="btn btn-sm btn-primary">Withdraw</button> — Content in stat-actions, usually buttons. #}
-<c-vars title="" value="" desc="" figure="" actions="" class="" />
-<div class="stat {{ class }}" {{ attrs }}>
+<c-vars title="" value="" desc="" figure="" actions="" class:merge="stat" />
+<div class="{{ class }}" {{ attrs }}>
   {% if figure %}<div class="stat-figure">{{ figure }}</div>{% endif %}
   {% if title %}<div class="stat-title">{{ title }}</div>{% endif %}
   {% if value or value == 0 %}<div class="stat-value">{{ value }}</div>{% endif %}

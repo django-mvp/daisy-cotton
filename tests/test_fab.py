@@ -33,7 +33,7 @@ class TestFabTrigger:
 
         wrapper_open_tag = html.split(">")[0]
         assert "fab" in wrapper_open_tag
-        assert '<button class="btn  btn-lg btn-circle "' in html
+        assert '<button class="btn  btn-lg btn-circle"' in html
         assert 'tabindex="0"' in html
         assert 'type="button"' in html
         assert 'class="bi bi-plus-lg "' in html

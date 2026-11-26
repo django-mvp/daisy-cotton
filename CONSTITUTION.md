@@ -81,7 +81,9 @@ Every component names its attributes the same way, so learning one teaches all o
 - **Style modifiers** are boolean attributes named exactly as daisyUI names them: `outline`,
   `ghost`, `soft`, `dash` and the rest.
 - **`class`** is declared in `<c-vars>` and merged into the root element's own class list, so a
-  caller's classes are never written as a second, ignored `class` attribute.
+  caller's classes are never written as a second, ignored `class` attribute. A component with
+  fixed base classes declares them as `class:merge="…"`, and Cotton puts the caller's classes
+  after them.
 - **Everything else** a component does not need to decide passes through `{{ attrs }}` to its
   root element.
 

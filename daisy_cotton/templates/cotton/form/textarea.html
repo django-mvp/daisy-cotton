@@ -5,7 +5,7 @@
 {# @prop class:text | description:"Extra classes added to the textarea." #}
 {# @slot Hello — The textarea's value, exactly as the caller wrote it. #}
 {% load daisy_cotton %}
-<c-vars variant="" size="" ghost="" class="" />
+<c-vars variant="" size="" ghost="" class:merge="textarea" />
 {# djlint:off #}
-<textarea class="textarea {% variation variant "textarea" "neutral,primary,secondary,accent,info,success,warning,error" %} {% variation size "textarea" "xs,sm,md,lg,xl" %}{% if ghost %} textarea-ghost{% endif %} {{ class }}" {{ attrs }}>{{ slot }}</textarea>
+<textarea class="{{ class }} {% variation variant "textarea" "neutral,primary,secondary,accent,info,success,warning,error" %} {% variation size "textarea" "xs,sm,md,lg,xl" %}{% if ghost %} textarea-ghost{% endif %}" {{ attrs }}>{{ slot }}</textarea>
 {# djlint:on #}

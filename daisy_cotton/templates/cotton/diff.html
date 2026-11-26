@@ -5,8 +5,8 @@
 {# @prop class:text | description:"Extra classes added to the diff, such as aspect-16/9 to keep the aspect ratio." #}
 {# @slot:item_1 <img src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a.webp" alt="A pair of trainers"> — The first item, shown in diff-item-1. #}
 {# @slot:item_2 <img src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a-blur.webp" alt="The same trainers, blurred"> — The second item, shown in diff-item-2. #}
-<c-vars item_1="" item_2="" aria-label="" class="" />
-<figure class="diff {{ class }}"
+<c-vars item_1="" item_2="" aria-label="" class:merge="diff" />
+<figure class="{{ class }}"
         tabindex="0"
         {% if aria_label %}aria-label="{{ aria_label }}"{% endif %}
         {{ attrs }}>

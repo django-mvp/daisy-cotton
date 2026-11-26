@@ -3,7 +3,7 @@
 {# @prop size:select['xs','sm','md','lg','xl'] | description:"Radio size." #}
 {# @prop class:text | description:"Extra classes added to the radio." #}
 {% load daisy_cotton %}
-<c-vars variant="" size="" class="" />
+<c-vars variant="" size="" class:merge="radio" />
 {# djlint:off #}
-<input type="radio" class="radio {% variation variant "radio" "neutral,primary,secondary,accent,info,success,warning,error" %} {% variation size "radio" "xs,sm,md,lg,xl" %} {{ class }}" {{ attrs }}>
+<input type="radio" class="{{ class }} {% variation variant "radio" "neutral,primary,secondary,accent,info,success,warning,error" %} {% variation size "radio" "xs,sm,md,lg,xl" %}" {{ attrs }}>
 {# djlint:on #}

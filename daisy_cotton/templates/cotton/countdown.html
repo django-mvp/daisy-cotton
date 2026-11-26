@@ -6,5 +6,5 @@
   daisyUI hides every direct child of .countdown and visibility is
   inherited, so anything inside would be hidden too.
 {% endcomment %}
-<c-vars value="0" class="" />
-<span class="countdown {{ class }}" {{ attrs }}><span style="--value:{{ value }};" aria-hidden="true">{{ value }}</span></span><span class="sr-only">{{ value }}</span>
+<c-vars value="0" class:merge="countdown" />
+<span class="{{ class }}" {{ attrs }}><span style="--value:{{ value }};" aria-hidden="true">{{ value }}</span></span><span class="sr-only">{{ value }}</span>

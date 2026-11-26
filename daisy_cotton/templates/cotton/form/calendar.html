@@ -5,8 +5,8 @@
 {# @prop next_icon:text | default:"chevron-right" | description:"Icon of the next month button, passed to the icon component as its name; use icon classes such as bi bi-chevron-right unless your project's icon component resolves names." #}
 {# @prop class:text | description:"Extra classes added to the calendar." #}
 {% load i18n daisy_cotton %}
-<c-vars range="" months="1" previous_icon="chevron-left" next_icon="chevron-right" class="" />
+<c-vars range="" months="1" previous_icon="chevron-left" next_icon="chevron-right" class:merge="cally" />
 {% count_range months 1 as offsets %}
 {# djlint:off #}
-{% if range %}<calendar-range{% else %}<calendar-date{% endif %} class="cally {{ class }}"{% if offsets|length > 1 %} months="{{ offsets|length }}"{% endif %} {{ attrs }}><span slot="previous"><c-icon name="{{ previous_icon }}" aria-hidden="true" only /><span class="sr-only">{% trans "Previous" %}</span></span><span slot="next"><c-icon name="{{ next_icon }}" aria-hidden="true" only /><span class="sr-only">{% trans "Next" %}</span></span>{% for offset in offsets %}<calendar-month{% if offset %} offset="{{ offset }}"{% endif %}></calendar-month>{% endfor %}{% if range %}</calendar-range>{% else %}</calendar-date>{% endif %}
+{% if range %}<calendar-range{% else %}<calendar-date{% endif %} class="{{ class }}"{% if offsets|length > 1 %} months="{{ offsets|length }}"{% endif %} {{ attrs }}><span slot="previous"><c-icon name="{{ previous_icon }}" aria-hidden="true" only /><span class="sr-only">{% trans "Previous" %}</span></span><span slot="next"><c-icon name="{{ next_icon }}" aria-hidden="true" only /><span class="sr-only">{% trans "Next" %}</span></span>{% for offset in offsets %}<calendar-month{% if offset %} offset="{{ offset }}"{% endif %}></calendar-month>{% endfor %}{% if range %}</calendar-range>{% else %}</calendar-date>{% endif %}
 {# djlint:on #}

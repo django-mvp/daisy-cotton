@@ -2,5 +2,5 @@
 {# @prop text:text | description:"Makes it a text skeleton that stays readable to assistive technology. A string given is rendered as the content in place of the default slot; a bare attribute leaves the slot as the content." #}
 {# @prop class:text | description:"Extra classes added to the skeleton, such as h-32 w-full for its size and shape." #}
 {# @slot — Content when text is a bare attribute or empty; a sample here would render as hidden text inside a shape. #}
-<c-vars text="" class="" />
-<div class="skeleton{% if text %} skeleton-text{% endif %} {{ class }}"{% if not text %} aria-hidden="true"{% endif %} {{ attrs }}>{% if text and text is not True %}{{ text }}{% else %}{{ slot }}{% endif %}</div>
+<c-vars text="" class:merge="skeleton" />
+<div class="{{ class }}{% if text %} skeleton-text{% endif %}"{% if not text %} aria-hidden="true"{% endif %} {{ attrs }}>{% if text and text is not True %}{{ text }}{% else %}{{ slot }}{% endif %}</div>

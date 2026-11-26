@@ -8,9 +8,9 @@
 {# @slot:close — Content shown in the close button's place while the FAB is open, e.g. a <c-button circle icon="bi bi-x-lg" aria-label="Close" />. #}
 {# @slot:main_action — Content shown as the primary action while the FAB is open, e.g. a labelled <c-button>. #}
 {# @slot:button — A custom trigger. Must be focusable and carry tabindex, so a click opens the FAB in every browser. #}
-<c-vars flower="" close="" main_action="" button="" class="" />
+<c-vars flower="" close="" main_action="" button="" class:merge="fab" />
 {# djlint:off #}
-<div class="fab{% if flower %} fab-flower{% endif %} {{ class }}" {% if button %}{{ attrs }}{% endif %}>
+<div class="{{ class }}{% if flower %} fab-flower{% endif %}" {% if button %}{{ attrs }}{% endif %}>
   {% if button %}
     {{ button }}
   {% else %}

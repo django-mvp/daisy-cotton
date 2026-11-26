@@ -3,5 +3,5 @@
 {# @prop class:text | description:"Extra classes added to the button." #}
 {# @slot Open sidebar — The opener's text. The focus ring shows when the opener is inside the drawer's page content. #}
 {# A label, not a button: daisyUI's focus ring targets `label.drawer-button`, and the Tab stop is the drawer's checkbox. #}
-<c-vars drawer="" class />
-<label for="{{ drawer }}" class="btn drawer-button {{ class }}" {{ attrs }}>{{ slot }}</label>
+<c-vars drawer="" class:merge="btn drawer-button" />
+<label for="{{ drawer }}" class="{{ class }}" {{ attrs }}>{{ slot }}</label>

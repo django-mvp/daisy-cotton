@@ -170,7 +170,8 @@ Design review SPEC-001. A name declared in `<c-vars>` with no default falls thro
 template context when the caller leaves it out, so a view with `role`, `title` or `text` in its
 context rewrote the divider's separator role, the join's group role and the footer group's name
 in a probe. Every declared name except `class` gets `=""`, the pattern `card/index.html` already
-uses for `title`. `class` keeps no default, as every existing component does.
+uses for `title`. `class` is declared with `class:merge`, holding the component's base classes,
+so Cotton merges the caller's classes in and never reads an enclosing component's `class`.
 
 **ADR:** none — the repository's existing pattern applied to this feature's templates.
 

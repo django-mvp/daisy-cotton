@@ -7,5 +7,5 @@
   content_class lands on the inner span, which is how daisyUI centres or
   otherwise arranges the lines.
 {% endcomment %}
-<c-vars content_class="" class="" />
-<span class="text-rotate {{ class }}" {{ attrs }}><span{% if content_class %} class="{{ content_class }}"{% endif %}>{{ slot }}</span></span>
+<c-vars content_class="" class:merge="text-rotate" />
+<span class="{{ class }}" {{ attrs }}><span{% if content_class %} class="{{ content_class }}"{% endif %}>{{ slot }}</span></span>

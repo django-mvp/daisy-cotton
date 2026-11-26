@@ -10,7 +10,7 @@
   `group`.
 {% endcomment %}
 {% load daisy_cotton %}
-<c-vars horizontal="" vertical="" role="" class />
-<div class="join {% if vertical %}{% responsive vertical 'join-vertical' %}{% endif %} {% if horizontal %}{% responsive horizontal 'join-horizontal' %}{% endif %} {{ class }}"
+<c-vars horizontal="" vertical="" role="" class:merge="join" />
+<div class="{{ class }} {% if vertical %}{% responsive vertical 'join-vertical' %}{% endif %} {% if horizontal %}{% responsive horizontal 'join-horizontal' %}{% endif %}"
      role="{{ role|default:'group' }}"
      {{ attrs }}>{{ slot }}</div>

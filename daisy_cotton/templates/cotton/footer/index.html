@@ -5,6 +5,6 @@
 {# @prop class:text | description:"Extra classes added to the footer." #}
 {# @slot <aside><p>Copyright 2026 Example Ltd</p></aside><c-footer.nav title="Company"><a class="link link-hover">About</a></c-footer.nav><c-footer.nav title="Legal"><a class="link link-hover">Terms</a></c-footer.nav> — A copyright line and footer.nav groups, or any content. #}
 {% load daisy_cotton %}
-<c-vars horizontal="" vertical="" placement="" class />
-<footer class="footer {% if horizontal %}{% responsive horizontal 'footer-horizontal' %}{% endif %} {% if vertical %}{% responsive vertical 'footer-vertical' %}{% endif %} {% variation placement 'footer' 'center' %} {{ class }}"
+<c-vars horizontal="" vertical="" placement="" class:merge="footer" />
+<footer class="{{ class }} {% if horizontal %}{% responsive horizontal 'footer-horizontal' %}{% endif %} {% if vertical %}{% responsive vertical 'footer-vertical' %}{% endif %} {% variation placement 'footer' 'center' %}"
         {{ attrs }}>{{ slot }}</footer>

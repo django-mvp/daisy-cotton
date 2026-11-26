@@ -15,7 +15,7 @@ class TestDockRoot:
         self, cotton_render_string_soup
     ):
         nav = cotton_render_string_soup('<c-dock size="sm" class="mine">x</c-dock>').nav
-        assert nav["class"] == ["dock", "dock-sm", "mine"]
+        assert nav["class"] == ["dock", "mine", "dock-sm"]
 
     def test_unknown_size_adds_no_class(self, cotton_render_string_soup):
         nav = cotton_render_string_soup('<c-dock size="huge">x</c-dock>').nav

@@ -5,6 +5,6 @@
 {# @prop class:text | description:"Extra classes added to the menu." #}
 {# @slot <c-menu.title text="Docs" /><c-menu.item href="#" text="Overview" active /><c-menu.item text="Archived" disabled /><c-menu.divider /><c-menu.submenu text="More" open><c-menu.item href="#" text="Guides" /><c-menu.submenu text="Deeper" open><c-menu.item href="#" text="Reference" /></c-menu.submenu></c-menu.submenu> — The menu's entries, as menu.item, menu.title, menu.divider and menu.submenu components. #}
 {% load daisy_cotton %}
-<c-vars size horizontal paged class />
-<ul class="menu {% variation size "menu" "xs,sm,md,lg,xl" %} {% responsive horizontal "menu-horizontal" %}{% if paged %} menu-paged{% endif %} {{ class }}"
+<c-vars size horizontal paged class:merge="menu" />
+<ul class="{{ class }} {% variation size "menu" "xs,sm,md,lg,xl" %} {% responsive horizontal "menu-horizontal" %}{% if paged %} menu-paged{% endif %}"
     {{ attrs }}>{{ slot }}</ul>

@@ -8,5 +8,5 @@
   in: daisyUI positions each item against the wrapper, and an item that
   follows the content would be read after it.
 {% endcomment %}
-<c-vars class items="" />
-<div class="indicator {{ class }}" {{ attrs }}>{{ items }}{{ slot }}</div>
+<c-vars class:merge="indicator" items="" />
+<div class="{{ class }}" {{ attrs }}>{{ items }}{{ slot }}</div>

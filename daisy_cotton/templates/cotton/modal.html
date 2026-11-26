@@ -18,9 +18,9 @@
         open=""
         content_class=""
         actions=""
-        class="" />
+        class:merge="modal" />
 <dialog{% if id %} id="{{ id }}"{% endif %}
-        class="modal {% variation placement "modal" "top,middle,bottom,start,end" %} {{ class }}"
+        class="{{ class }} {% variation placement "modal" "top,middle,bottom,start,end" %}"
         {% if id and title %}aria-labelledby="{{ id }}-title"{% endif %}
         {% if open %}open{% endif %}
         {{ attrs }}>

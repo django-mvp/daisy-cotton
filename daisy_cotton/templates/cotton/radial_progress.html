@@ -5,7 +5,7 @@
 {# @prop class:text | description:"Extra classes added to the ring, such as a size or thickness variable, or a text colour utility." #}
 {# @slot 70% — Custom centre content, such as an icon or a short word, replacing the visible percentage. #}
 {% load daisy_cotton %}
-<c-vars value="" label="" style="" class="" />
+<c-vars value="" label="" style="" class:merge="radial-progress" />
 {# djlint:off #}
-<div class="radial-progress {{ class }}" role="progressbar" style="--value:{{ value }};{% if style %} {{ style }}{% endif %}" {% if value != "" %}aria-valuenow="{{ value }}" {% endif %}aria-valuemin="0" aria-valuemax="100"{% if label %} aria-label="{{ label }}"{% endif %} {{ attrs }}>{% if slot.strip %}{{ slot }}{% elif value != "" %}{{ value }}%{% endif %}</div>
+<div class="{{ class }}" role="progressbar" style="--value:{{ value }};{% if style %} {{ style }}{% endif %}" {% if value != "" %}aria-valuenow="{{ value }}" {% endif %}aria-valuemin="0" aria-valuemax="100"{% if label %} aria-label="{{ label }}"{% endif %} {{ attrs }}>{% if slot.strip %}{{ slot }}{% elif value != "" %}{{ value }}%{% endif %}</div>
 {# djlint:on #}

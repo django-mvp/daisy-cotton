@@ -4,7 +4,7 @@
 {# @prop aria-label:text | description:"Accessible name of the dock. Defaults to a translated Dock." #}
 {# @slot — The dock's items, as dock.item components. #}
 {% load daisy_cotton i18n %}
-<c-vars size class aria-label />
-<nav class="dock {% variation size "dock" "xs,sm,md,lg,xl" %} {{ class }}"
+<c-vars size class:merge="dock" aria-label />
+<nav class="{{ class }} {% variation size "dock" "xs,sm,md,lg,xl" %}"
      aria-label="{% if aria_label %}{{ aria_label }}{% else %}{% trans "Dock" %}{% endif %}"
      {{ attrs }}>{{ slot }}</nav>

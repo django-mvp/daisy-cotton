@@ -6,8 +6,8 @@
 {# @prop class:text | description:"Extra classes added to the collapse." #}
 {# @slot A short answer. — Content shown in collapse-content. #}
 {# @slot:title — A heading in place of the title attribute, for rich content such as an icon or badge. #}
-<c-vars title="" arrow="" plus="" open="" class="" />
-<details class="collapse{% if arrow %} collapse-arrow{% endif %}{% if plus %} collapse-plus{% endif %} {{ class }}"{% if open %} open{% endif %} {{ attrs }}>
+<c-vars title="" arrow="" plus="" open="" class:merge="collapse" />
+<details class="{{ class }}{% if arrow %} collapse-arrow{% endif %}{% if plus %} collapse-plus{% endif %}"{% if open %} open{% endif %} {{ attrs }}>
   <summary class="collapse-title focus-visible:outline-2 focus-visible:-outline-offset-2">{{ title }}</summary>
   <div class="collapse-content">{{ slot }}</div>
 </details>

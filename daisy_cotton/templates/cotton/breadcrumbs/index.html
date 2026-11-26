@@ -4,9 +4,9 @@
 {# @prop aria-label:text | description:"Accessible name of the trail. Defaults to a translated Breadcrumbs." #}
 {# @slot — The trail's steps, as breadcrumbs.item components. Shown when no items are passed. #}
 {% load i18n %}
-<c-vars items class aria-label />
+<c-vars items class:merge="breadcrumbs" aria-label />
 {# `only` is load-bearing: a Cotton child reads a prop it wasn't given (here `class`) from the parent, so every <li> would get the trail's class (#3). #}
-<nav class="breadcrumbs {{ class }}"
+<nav class="{{ class }}"
      aria-label="{% if aria_label %}{{ aria_label }}{% else %}{% trans "Breadcrumbs" %}{% endif %}"
      {{ attrs }}>
   <ul>

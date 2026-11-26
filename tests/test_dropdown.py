@@ -75,7 +75,7 @@ class TestDropdownTrigger:
             "</c-dropdown>"
         )
 
-        assert '<button class="btn btn-primary  " type="button"' in html
+        assert '<button class="btn btn-primary " type="button"' in html
         assert "<span>Options</span>" in html
         assert 'class="bi bi-gear "' in html
         assert "text=" not in html, (

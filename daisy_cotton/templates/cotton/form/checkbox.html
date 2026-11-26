@@ -3,7 +3,7 @@
 {# @prop size:select['xs','sm','md','lg','xl'] | description:"Checkbox size." #}
 {# @prop class:text | description:"Extra classes added to the checkbox." #}
 {% load daisy_cotton %}
-<c-vars variant="" size="" class="" />
+<c-vars variant="" size="" class:merge="checkbox" />
 {# djlint:off #}
-<input type="checkbox" class="checkbox {% variation variant "checkbox" "neutral,primary,secondary,accent,info,success,warning,error" %} {% variation size "checkbox" "xs,sm,md,lg,xl" %} {{ class }}" {{ attrs }}>
+<input type="checkbox" class="{{ class }} {% variation variant "checkbox" "neutral,primary,secondary,accent,info,success,warning,error" %} {% variation size "checkbox" "xs,sm,md,lg,xl" %}" {{ attrs }}>
 {# djlint:on #}

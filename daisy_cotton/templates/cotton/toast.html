@@ -3,7 +3,7 @@
 {# @prop class:text | description:"Extra classes added to the wrapper." #}
 {# @slot <c-alert variant="info" icon="bi bi-info-circle">New version available.</c-alert><c-alert variant="success" role="status">Changes saved.</c-alert><c-alert variant="warning" dismissible>Session about to expire.</c-alert> — Alerts stacked inside the toast, each keeping its own role. #}
 {% load daisy_cotton %}
-<c-vars placement="" class="" />
+<c-vars placement="" class:merge="toast" />
 {# djlint:off #}
-<div class="toast {% for word in placement.split %}{% variation word "toast" "top,middle,bottom,start,center,end" %} {% endfor %}{{ class }}" {{ attrs }}>{{ slot }}</div>
+<div class="{{ class }} {% for word in placement.split %}{% variation word "toast" "top,middle,bottom,start,center,end" %} {% endfor %}" {{ attrs }}>{{ slot }}</div>
 {# djlint:on #}
