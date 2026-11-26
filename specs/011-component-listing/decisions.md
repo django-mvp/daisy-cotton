@@ -87,3 +87,9 @@ The review found tests that held the catalog to the configured folder only (COR-
 Each was run against the mutation it guards against and failed.
 
 **ADR:** none — local to this feature
+
+## D14: Names are shown as a tag writes them
+
+With `COTTON_SNAKE_CASED_NAMES` on, the default, a component's name and tag use hyphens where its file name has underscores: `radial_progress.html` is listed as `<c-radial-progress>`. Showing the file's spelling would lead a reader, or an agent, to copy a form the project does not write. With the setting off, the file's spelling is the tag. FR-003 was corrected to say so. Lookups accept either spelling, as before.
+
+**ADR:** none — a behaviour of this command, recorded in its spec

@@ -34,7 +34,7 @@ class TestCottonComponentsList:
             ["<c-badge>", "catalog_first"],
             ["<c-card>", "catalog_first"],
             ["<c-card.title>", "catalog_first"],
-            ["<c-hover_gallery>", "catalog_first"],
+            ["<c-hover-gallery>", "catalog_first"],
             ["<c-mvp.card>", "catalog_second"],
             ["<c-wide>", "catalog_second"],
         ]
@@ -242,7 +242,7 @@ class TestCottonComponentsShowJson:
         )
 
     def test_the_name_may_use_a_hyphen_for_an_underscore(self, configured_project):
-        assert show_json("hover-gallery")["name"] == "hover_gallery"
+        assert show_json("hover-gallery")["name"] == "hover-gallery"
 
     def test_show_ignores_the_list_filters(self, configured_project):
         data = json.loads(run("--show", "card", "--json", "--package", "nothing"))

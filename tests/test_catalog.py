@@ -98,7 +98,7 @@ class TestComponentCatalogFolders:
         catalog = ComponentCatalog()
 
         assert catalog.folders() == [project_dir.resolve()]
-        assert names(catalog.components()) == ["only_project"]
+        assert names(catalog.components()) == ["only-project"]
 
 
 class TestComponentCatalogComponents:
@@ -325,7 +325,7 @@ class TestComponentCatalogSearch:
 
         found = names(ComponentCatalog().search("card"))
 
-        assert {"card", "card.title", "mvp.card", "profile_card"} <= set(found)
+        assert {"card", "card.title", "mvp.card", "profile-card"} <= set(found)
         assert "badge" not in found
 
     def test_a_term_ignores_case(self, configure):
@@ -337,7 +337,7 @@ class TestComponentCatalogSearch:
     def test_hyphen_in_the_term_finds_an_underscored_name(self, configure):
         configure()
 
-        assert "hover_gallery" in names(ComponentCatalog().search("hover-gallery"))
+        assert "hover-gallery" in names(ComponentCatalog().search("hover-gallery"))
 
     def test_hyphen_finds_the_underscored_file_when_snake_casing_is_off(
         self, configure
@@ -393,7 +393,7 @@ class TestComponentCatalogGet:
     def test_a_hyphen_finds_an_underscored_name(self, configure):
         configure()
 
-        assert ComponentCatalog().get("hover-gallery").name == "hover_gallery"
+        assert ComponentCatalog().get("hover-gallery").name == "hover-gallery"
 
     def test_a_hyphenated_name_gets_the_file_django_renders_when_snake_casing_is_off(
         self, configure
@@ -416,6 +416,22 @@ class TestComponentCatalogGet:
         configure(COTTON_SNAKE_CASED_NAMES=False)
 
         assert ComponentCatalog().get("hover-gallery").name == "hover_gallery"
+
+    def test_the_tag_is_written_with_hyphens_when_names_are_snake_cased(
+        self, configure, project_dir
+    ):
+        write(project_dir, "cotton/radial_progress.html")
+        configure()
+
+        assert ComponentCatalog().get("radial_progress").tag == "<c-radial-progress>"
+
+    def test_the_tag_keeps_the_file_name_when_snake_casing_is_off(
+        self, configure, project_dir
+    ):
+        write(project_dir, "cotton/radial_progress.html")
+        configure(COTTON_SNAKE_CASED_NAMES=False)
+
+        assert ComponentCatalog().get("radial_progress").tag == "<c-radial_progress>"
 
     def test_an_underscore_does_not_reach_a_hyphenated_file_when_snake_casing_is_off(
         self, configure, project_dir
@@ -640,7 +656,7 @@ class TestComponentCatalogAgreesWithDjango:
         assert listed["card"].overrides == ("catalog_first", "catalog_second")
         assert listed["badge"].package == "catalog_first"
         assert listed["wide"].package == "catalog_second"
-        assert "only_here" in listed
+        assert "only-here" in listed
 
     def test_agrees_when_snake_casing_is_off(self, configure):
         configure(COTTON_SNAKE_CASED_NAMES=False)
@@ -652,7 +668,7 @@ class TestComponentCatalogAgreesWithDjango:
     def test_the_components_are_the_ones_the_gallery_finds(self):
         config = CatalogConfig(cotton_dir=PACKAGE_COTTON)
 
-        gallery = {component.tag_path for component in scan(config)}
+        gallery = {c.tag_path.replace("_", "-") for c in scan(config)}
         listed = {
             c.name
             for c in ComponentCatalog().components()

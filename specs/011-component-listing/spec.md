@@ -118,7 +118,7 @@ Having found `card.title`, the developer runs `manage.py cotton_components --sho
 
 - **FR-001**: The package MUST provide a `cotton_components` management command, available in any project that has `daisy_cotton` in `INSTALLED_APPS`. *(US1, US2)*
 - **FR-002**: The command MUST find components in the folders, and in the order, that the project's template loaders search, under the project's `COTTON_DIR` setting (default `cotton`), and under `cotton/` with snake-cased names wherever the installed django-cotton falls back to it. *(US1)*
-- **FR-003**: Each component's name MUST be the name django-cotton resolves from a tag: folders joined with dots, `<folder>/index.html` named after its folder, and a file beside a folder of the same name winning over the folder's `index.html`. *(US1)*
+- **FR-003**: Each component's name MUST be the name a template writes in its tag, which django-cotton resolves to the file: folders joined with dots, underscores written as hyphens while `COTTON_SNAKE_CASED_NAMES` is on (`radial_progress.html` is `radial-progress`), `<folder>/index.html` named after its folder, and a file beside a folder of the same name winning over the folder's `index.html`. *(US1)*
 - **FR-004**: A component provided by more than one folder MUST be listed once, as the copy the template loaders find first, recording the package of each copy it overrides. *(US1, US2)*
 - **FR-005**: Each component MUST record its package: the label of the installed app whose `templates/` folder holds it, or `project` for a project-level template folder. *(US1, US2)*
 - **FR-006**: Files and folders whose names start with `_`, and files that are not `.html`, MUST NOT be listed. *(US1)*

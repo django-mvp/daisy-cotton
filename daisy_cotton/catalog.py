@@ -123,7 +123,7 @@ class ComponentCatalog:
         """Every component, once each as the copy that renders.
 
         Returns:
-            Components sorted by name.
+            Components sorted by the name a tag writes.
         """
         packages = self.package_labels()
         copies: dict[str, list[tuple[str, Path]]] = {}
@@ -139,7 +139,8 @@ class ComponentCatalog:
                         names.add(name)
                         key = f"{directory}/{relative.as_posix()}"
                         copies.setdefault(key, []).append((package, path))
-        return [self.build_component(name, copies) for name in sorted(names)]
+        found = [self.build_component(name, copies) for name in names]
+        return sorted(found, key=lambda component: component.name)
 
     def component_dirs(self) -> tuple[str, ...]:
         """Template sub-folders that components are loaded from, in lookup order.
@@ -341,6 +342,21 @@ class ComponentCatalog:
         is_file = relative.name != "index.html" or len(parts) == 1
         return ".".join(parts if is_file else parts[:-1])
 
+    def written(self, name: str) -> str:
+        """The name as a template writes it in a tag.
+
+        With snake-cased names on, django-cotton reads a hyphen in a tag as an
+        underscore in the file name, so the tag is written with hyphens:
+        ``radial_progress.html`` is ``<c-radial-progress>``.
+
+        Args:
+            name: Dotted name taken from the file's path.
+
+        Returns:
+            The name to write after ``c-``.
+        """
+        return name.replace("_", "-") if self.snake_cased else name
+
     def build_component(
         self, name: str, copies: dict[str, list[tuple[str, Path]]]
     ) -> Component:
@@ -361,4 +377,4 @@ class ComponentCatalog:
             source = path.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):
             source = ""
-        return Component(name, path, package, overrides, source)
+        return Component(self.written(name), path, package, overrides, source)

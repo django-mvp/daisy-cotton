@@ -98,7 +98,7 @@ $ python manage.py cotton_components card
 1 component
 ```
 
-Each line gives the tag to write, the package it comes from (an app label, or `project` for a project-level template folder) and the first sentence of its `@description`, or `—` when there is none. A component that more than one folder provides is listed once, as the copy Django's template loaders find first, and its line ends with `(overrides <package>)`, naming the packages whose copies it hides.
+Each line gives the tag to write, as a template writes it (with `COTTON_SNAKE_CASED_NAMES` on, its default, `radial_progress.html` is `<c-radial-progress>`), the package it comes from (an app label, or `project` for a project-level template folder) and the first sentence of its `@description`, or `—` when there is none. A component that more than one folder provides is listed once, as the copy Django's template loaders find first, and its line ends with `(overrides <package>)`, naming the packages whose copies it hides.
 
 | Option | Effect |
 |---|---|
