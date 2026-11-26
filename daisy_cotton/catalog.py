@@ -211,7 +211,7 @@ class ComponentCatalog:
         components = self.components()
         wanted = self.normalise(name)
         for component in components:
-            if self.normalise(component.name) == wanted:
+            if self.renders_as(component.name, name):
                 return component
         by_normalised = {self.normalise(c.name): c.name for c in components}
         close = difflib.get_close_matches(
@@ -260,6 +260,27 @@ class ComponentCatalog:
             name = match.group(1) or match.group(2)
             if name not in NOT_COMPONENTS and self.normalise(name) == wanted:
                 return True
+        return False
+
+    def renders_as(self, component_name: str, name: str) -> bool:
+        """Whether a tag written with ``name`` renders the named component.
+
+        With snake-cased names on, hyphens and underscores are the same. With
+        them off, a hyphen in the tag reaches an underscored file only through
+        django-cotton's fallback, and an underscore never reaches a hyphen.
+
+        Args:
+            component_name: The component's name, from its file.
+            name: The name as written in the tag.
+
+        Returns:
+            True when the tag renders that component.
+        """
+        component_name, name = component_name.lower(), name.lower()
+        if component_name == name:
+            return True
+        if self.snake_cased or "-" not in component_name:
+            return self.normalise(component_name) == self.normalise(name)
         return False
 
     def normalise(self, value: str) -> str:

@@ -417,6 +417,17 @@ class TestComponentCatalogGet:
 
         assert ComponentCatalog().get("hover-gallery").name == "hover_gallery"
 
+    def test_an_underscore_does_not_reach_a_hyphenated_file_when_snake_casing_is_off(
+        self, configure, project_dir
+    ):
+        write(project_dir, "cotton/bad-name.html")
+        configure(COTTON_SNAKE_CASED_NAMES=False)
+        catalog = ComponentCatalog()
+
+        assert catalog.get("bad-name").name == "bad-name"
+        with pytest.raises(ComponentNotFound):
+            catalog.get("bad_name")
+
     def test_an_unknown_name_suggests_the_closest_names(self, configure):
         configure()
 
