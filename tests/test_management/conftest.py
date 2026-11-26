@@ -16,7 +16,7 @@ def project_dir(tmp_path):
 
 @pytest.fixture
 def configured_project(settings, project_dir):
-    """Point Django at the two fixture apps and the project folder, and return the folder."""
+    """Point Django at both fixture apps and the project folder, and return it."""
     settings.INSTALLED_APPS = [FIRST, SECOND]
     settings.TEMPLATES = [
         {

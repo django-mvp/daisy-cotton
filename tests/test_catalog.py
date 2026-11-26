@@ -18,7 +18,7 @@ def project_dir(tmp_path):
 
 @pytest.fixture
 def configure(settings, project_dir):
-    """Return a function that points Django at the fixture apps and the project folder."""
+    """Return a function pointing Django at the fixture apps and the project folder."""
 
     def _configure(apps=(FIRST, SECOND), dirs=None, loaders=None, **extra):
         settings.INSTALLED_APPS = list(apps)

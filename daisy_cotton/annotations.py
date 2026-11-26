@@ -1,6 +1,7 @@
 # Source: django-cotton-gallery 1.0.1, django_cotton_gallery/core/annotations.py
 # and the Prop, Slot and ParsedComponent classes from core/schemas.py, copied
-# unchanged apart from joining them into one module.
+# unchanged apart from joining them into one module and shortening one example
+# in the module docstring to fit the line length.
 #
 # Licence of the original:
 #
@@ -34,7 +35,7 @@ and produces a structured `ParsedComponent`. Pure — no I/O, no Django imports.
 Annotation syntax (pipe-style, Django filter feel):
 
     {# @description Short one-line component summary #}
-    {# @prop variant:select['primary', 'secondary'] | default:"primary" | description:"Style" #}
+    {# @prop variant:select['primary', 'secondary'] | default:"primary" #}
     {# @prop loading:boolean | default:False | description:"Show spinner" #}
     {# @prop label:text | default:"Click me" | description:"Button label" #}
     {# @prop count:number | default:0 | description:"Badge count" #}

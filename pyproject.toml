@@ -126,6 +126,11 @@ plugins = ["mypy_django_plugin.main"]
 django_settings_module = "tests.settings"
 ignore_missing_model_attributes = "True"
 
+[tool.forge.docs]
+# A copy of django-cotton-gallery's annotation parser. Its names are not this
+# package's public API, and the copy stays verbatim so a re-copy is a plain diff.
+exempt-paths = ["daisy_cotton/annotations.py"]
+
 [tool.forge.conformance]
 # These tests exercise Cotton templates or the app registry, so there is no Python module to mirror.
 non-mirror-paths = [

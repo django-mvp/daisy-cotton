@@ -12,7 +12,7 @@ from daisy_cotton.catalog import Component, ComponentCatalog
 class Command(BaseCommand):
     """Print one line for each Cotton component the project can use."""
 
-    help = "List the Cotton components the project can render, from every installed package."
+    help = "List the Cotton components the project can render, from every package."
 
     def add_arguments(self, parser):
         """Declare the search term and the filters."""

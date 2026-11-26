@@ -109,6 +109,8 @@ Each line gives the tag to write, the package it comes from (an app label, or `p
 
 Every option combines with the others. A term that matches nothing prints a message and exits successfully. Files and folders that start with `_`, and files that no tag can reach (a `-` in the path while names are snake-cased, or a `.` in a file name), are not listed. The command follows the project's `COTTON_DIR` setting.
 
+The same list is available from Python. `ComponentCatalog().search("card")` returns `Component` records in name order, each with `name`, `tag`, `package`, `path`, `overrides` and `summary`. `search` also takes `text=` and `package=`, and `components()` returns every component.
+
 ## Calendar
 
 `<c-form.calendar>` writes Cally's `<calendar-date>` element, or `<calendar-range>` with `range`, carrying daisyUI's `cally` class. It shows nothing until the project loads Cally, and this package does not. Add the module script to the page's head, pinning the version you have tested or hosting the file yourself:

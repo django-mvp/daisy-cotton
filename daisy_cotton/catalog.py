@@ -68,10 +68,10 @@ class _Candidate:
 
 
 class ComponentCatalog:
-    """Every component the project can render, found the way its template loaders find them."""
+    """Every component the project can render, found as the loaders find them."""
 
     def __init__(self) -> None:
-        """Read the settings that decide where components live and how they are named."""
+        """Read the settings that say where components live and how they are named."""
         self.cotton_dir: str = getattr(settings, "COTTON_DIR", "cotton")
         self.snake_cased: bool = getattr(settings, "COTTON_SNAKE_CASED_NAMES", True)
 
@@ -132,10 +132,12 @@ class ComponentCatalog:
         ]
 
     def _normalise(self, value: str) -> str:
+        """Lower-case a name, reading hyphens as underscores in snake-cased names."""
         value = value.lower()
         return value.replace("-", "_") if self.snake_cased else value
 
     def _collect(self, loaders, found: list[Path]) -> None:
+        """Append each loader's folders to ``found``, including wrapped loaders."""
         for loader in loaders:
             get_dirs = getattr(loader, "get_dirs", None)
             if get_dirs is not None:
@@ -147,13 +149,14 @@ class ComponentCatalog:
 
     @staticmethod
     def _packages() -> dict[Path, str]:
+        """Map each installed app's template folder to the app's label."""
         return {
             Path(config.path, "templates").resolve(): config.label
             for config in apps.get_app_configs()
         }
 
     def _locate(self, relative: Path) -> tuple[str, bool] | None:
-        """Name and kind for a file below the cotton folder, or None when no tag reaches it."""
+        """Name and kind of a file below the cotton folder, or None if no tag can."""
         parts = [*relative.parts[:-1], relative.stem]
         if any(part.startswith("_") or "." in part for part in parts):
             return None
@@ -164,6 +167,7 @@ class ComponentCatalog:
 
     @staticmethod
     def _build(name: str, found: list[_Candidate]) -> Component:
+        """Pick the copy that renders and record the packages it overrides."""
         winner = next((c for c in found if c.is_file), found[0])
         overrides: list[str] = []
         for candidate in found:
