@@ -104,6 +104,9 @@ extend = "ruff-base.toml"
 # The demo project is a demonstration target, never deployed: its settings
 # carry a literal SECRET_KEY on purpose.
 "demo/*" = ["S101", "S105", "S106"]
+# A verbatim copy of django-cotton-gallery's parser, kept free of edits so a later
+# re-copy is a plain diff.
+"daisy_cotton/annotations.py" = ["D"]
 
 [tool.mypy]
 files = ["daisy_cotton"]
