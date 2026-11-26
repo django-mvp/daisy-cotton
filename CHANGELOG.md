@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.3.0] - 2026-11-26
+
 ### Changed
 
 - django-cotton 2.9 or later is now required, up from 2.6. 2.9.0 fixes attribute injection
