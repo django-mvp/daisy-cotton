@@ -15,13 +15,15 @@ from django.template.backends.django import DjangoTemplates
 
 from daisy_cotton.annotations import AnnotationParser, ParsedComponent
 
+__all__ = ["Component", "ComponentCatalog", "ComponentNotFound"]
+
 PROJECT_PACKAGE = "project"
 NO_DESCRIPTION = "—"
-_FIRST_SENTENCE = re.compile(r"(.+?[.!?])(?=\s+[A-Z])", re.S)
-_TAG_REFERENCE = re.compile(r"<c-([\w.-]+)|\{%\s*cotton\s+([\w.-]+)")
-_NOT_COMPONENTS = frozenset({"vars", "component"})
-_SUGGESTION_LIMIT = 5
-_SUGGESTION_CUTOFF = 0.6
+FIRST_SENTENCE = re.compile(r"(.+?[.!?])(?=\s+[A-Z])", re.S)
+TAG_REFERENCE = re.compile(r"<c-([\w.-]+)|\{%\s*cotton\s+([\w.-]+)")
+NOT_COMPONENTS = frozenset({"vars", "component"})
+SUGGESTION_LIMIT = 5
+SUGGESTION_CUTOFF = 0.6
 
 
 @dataclass(frozen=True)
@@ -58,7 +60,7 @@ class Component:
         description = " ".join(self.documentation.description.split())
         if not description:
             return NO_DESCRIPTION
-        match = _FIRST_SENTENCE.match(description)
+        match = FIRST_SENTENCE.match(description)
         return match.group(1) if match else description
 
 
@@ -83,7 +85,7 @@ class ComponentNotFound(LookupError):
 
 
 @dataclass(frozen=True)
-class _Candidate:
+class Candidate:
     """A template file that could render a component, before overrides are settled."""
 
     folder_index: int
@@ -109,7 +111,7 @@ class ComponentCatalog:
         found: list[Path] = []
         for engine in engines.all():
             if isinstance(engine, DjangoTemplates):
-                self._collect(engine.engine.template_loaders, found)
+                self.collect_folders(engine.engine.template_loaders, found)
         return found
 
     def components(self) -> list[Component]:
@@ -118,19 +120,22 @@ class ComponentCatalog:
         Returns:
             Components sorted by name.
         """
-        packages = self._packages()
-        candidates: dict[str, list[_Candidate]] = {}
+        packages = self.package_labels()
+        candidates: dict[str, list[Candidate]] = {}
         for index, folder in enumerate(self.folders()):
             package = packages.get(folder, PROJECT_PACKAGE)
             root = folder / self.cotton_dir
             for path in sorted(root.rglob("*.html")):
-                located = self._locate(path.relative_to(root))
+                located = self.locate(path.relative_to(root))
                 if located is not None:
                     name, is_file = located
                     candidates.setdefault(name, []).append(
-                        _Candidate(index, is_file, path, package)
+                        Candidate(index, is_file, path, package)
                     )
-        return [self._build(name, found) for name, found in sorted(candidates.items())]
+        return [
+            self.build_component(name, found)
+            for name, found in sorted(candidates.items())
+        ]
 
     def search(
         self, term: str = "", text: str = "", package: str = ""
@@ -146,12 +151,12 @@ class ComponentCatalog:
         Returns:
             Matching components sorted by name.
         """
-        wanted_name = self._normalise(term)
+        wanted_name = self.normalise(term)
         wanted_text = text.lower()
         return [
             component
             for component in self.components()
-            if wanted_name in self._normalise(component.name)
+            if wanted_name in self.normalise(component.name)
             and wanted_text in component.documentation.description.lower()
             and (not package or component.package == package)
         ]
@@ -171,13 +176,13 @@ class ComponentCatalog:
                 close names.
         """
         components = self.components()
-        wanted = self._normalise(name)
+        wanted = self.normalise(name)
         for component in components:
-            if self._normalise(component.name) == wanted:
+            if self.normalise(component.name) == wanted:
                 return component
-        by_normalised = {self._normalise(c.name): c.name for c in components}
+        by_normalised = {self.normalise(c.name): c.name for c in components}
         close = difflib.get_close_matches(
-            wanted, by_normalised, n=_SUGGESTION_LIMIT, cutoff=_SUGGESTION_CUTOFF
+            wanted, by_normalised, n=SUGGESTION_LIMIT, cutoff=SUGGESTION_CUTOFF
         )
         raise ComponentNotFound(name, tuple(by_normalised[n] for n in close))
 
@@ -193,7 +198,7 @@ class ComponentCatalog:
         Returns:
             Paths of the templates that use it, once each, sorted.
         """
-        wanted = self._normalise(component.name)
+        wanted = self.normalise(component.name)
         found: set[Path] = set()
         for folder in self.folders():
             components_root = folder / self.cotton_dir
@@ -204,24 +209,24 @@ class ComponentCatalog:
                     text = path.read_text(encoding="utf-8")
                 except (UnicodeDecodeError, OSError):
                     continue
-                if self._references(text, wanted):
+                if self.refers_to(text, wanted):
                     found.add(path)
         return sorted(found)
 
-    def _references(self, text: str, wanted: str) -> bool:
+    def refers_to(self, text: str, wanted: str) -> bool:
         """Whether the template text names the component, already normalised."""
-        for match in _TAG_REFERENCE.finditer(text):
+        for match in TAG_REFERENCE.finditer(text):
             name = match.group(1) or match.group(2)
-            if name not in _NOT_COMPONENTS and self._normalise(name) == wanted:
+            if name not in NOT_COMPONENTS and self.normalise(name) == wanted:
                 return True
         return False
 
-    def _normalise(self, value: str) -> str:
+    def normalise(self, value: str) -> str:
         """Lower-case a name, reading hyphens as underscores in snake-cased names."""
         value = value.lower()
         return value.replace("-", "_") if self.snake_cased else value
 
-    def _collect(self, loaders, found: list[Path]) -> None:
+    def collect_folders(self, loaders, found: list[Path]) -> None:
         """Append each loader's folders to ``found``, including wrapped loaders."""
         for loader in loaders:
             get_dirs = getattr(loader, "get_dirs", None)
@@ -230,17 +235,17 @@ class ComponentCatalog:
                     resolved = Path(folder).resolve()
                     if resolved not in found:
                         found.append(resolved)
-            self._collect(getattr(loader, "loaders", ()), found)
+            self.collect_folders(getattr(loader, "loaders", ()), found)
 
     @staticmethod
-    def _packages() -> dict[Path, str]:
+    def package_labels() -> dict[Path, str]:
         """Map each installed app's template folder to the app's label."""
         return {
             Path(config.path, "templates").resolve(): config.label
             for config in apps.get_app_configs()
         }
 
-    def _locate(self, relative: Path) -> tuple[str, bool] | None:
+    def locate(self, relative: Path) -> tuple[str, bool] | None:
         """Name and kind of a file below the cotton folder, or None if no tag can."""
         parts = [*relative.parts[:-1], relative.stem]
         if any(part.startswith("_") or "." in part for part in parts):
@@ -251,7 +256,7 @@ class ComponentCatalog:
         return ".".join(parts if is_file else parts[:-1]), is_file
 
     @staticmethod
-    def _build(name: str, found: list[_Candidate]) -> Component:
+    def build_component(name: str, found: list[Candidate]) -> Component:
         """Pick the copy that renders and record the packages it overrides."""
         winner = next((c for c in found if c.is_file), found[0])
         overrides: list[str] = []

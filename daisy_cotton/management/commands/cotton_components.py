@@ -45,21 +45,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Print the components that match, or one component's documentation."""
         if options["show"]:
-            self._show(options["show"], as_json=options["json"])
+            self.show_component(options["show"], as_json=options["json"])
             return
         components = ComponentCatalog().search(
             options["term"], text=options["text"], package=options["package"]
         )
         if options["json"]:
             self.stdout.write(
-                json.dumps([self._as_dict(c) for c in components], indent=2)
+                json.dumps([self.as_dict(c) for c in components], indent=2)
             )
         elif components:
-            self._write_list(components)
+            self.write_list(components)
         else:
             self.stdout.write("No component matches.")
 
-    def _show(self, name: str, *, as_json: bool) -> None:
+    def show_component(self, name: str, *, as_json: bool) -> None:
         """Print one component's documentation, as text or JSON."""
         catalog = ComponentCatalog()
         try:
@@ -71,13 +71,13 @@ class Command(BaseCommand):
             raise CommandError(message) from error
         uses = catalog.uses(component)
         if as_json:
-            data = self._as_dict(component) | self._documentation_dict(component, uses)
+            data = self.as_dict(component) | self.documentation_dict(component, uses)
             self.stdout.write(json.dumps(data, indent=2))
         else:
-            self._write_documentation(component, uses)
+            self.write_documentation(component, uses)
 
     @staticmethod
-    def _documentation_dict(component: Component, uses: list) -> dict:
+    def documentation_dict(component: Component, uses: list) -> dict:
         """Collect the fields only one component's documentation carries."""
         parsed = component.documentation
         return {
@@ -89,7 +89,7 @@ class Command(BaseCommand):
             "use_paths": [str(path) for path in uses],
         }
 
-    def _write_documentation(self, component: Component, uses: list) -> None:
+    def write_documentation(self, component: Component, uses: list) -> None:
         """Write the text form of one component's documentation."""
         parsed = component.documentation
         package = f"Package: {component.package}"
@@ -111,15 +111,15 @@ class Command(BaseCommand):
         self.stdout.write("")
         self.stdout.write(" ".join(parsed.description.split()) or NO_DESCRIPTION)
         self.stdout.write("")
-        self._write_section("Props", [self._prop_line(p) for p in parsed.props])
-        self._write_section("Slots", [self._slot_line(s) for s in parsed.slots])
+        self.write_section("Props", [self.prop_line(p) for p in parsed.props])
+        self.write_section("Slots", [self.slot_line(s) for s in parsed.slots])
         self.stdout.write(
             "Passes extra attributes to its element."
             if parsed.accepts_attrs
             else "Does not pass extra attributes."
         )
 
-    def _write_section(self, title: str, lines: list[str]) -> None:
+    def write_section(self, title: str, lines: list[str]) -> None:
         """Write a heading and its indented lines, or the heading with `none`."""
         if not lines:
             self.stdout.write(f"{title}: none")
@@ -129,7 +129,7 @@ class Command(BaseCommand):
             self.stdout.write(f"  {line}")
 
     @staticmethod
-    def _prop_line(prop: Prop) -> str:
+    def prop_line(prop: Prop) -> str:
         """One line for a prop: name, type, options, default, flags, description."""
         parts = [prop.name, prop.type]
         if prop.options:
@@ -146,7 +146,7 @@ class Command(BaseCommand):
         return f"{line}  — {prop.description}" if prop.description else line
 
     @staticmethod
-    def _slot_line(slot: Slot) -> str:
+    def slot_line(slot: Slot) -> str:
         """One line for a slot: name or default, description, example content."""
         line = slot.name or "(default)"
         if slot.description:
@@ -155,7 +155,12 @@ class Command(BaseCommand):
             line += f"  e.g. {slot.content}"
         return line
 
-    def _write_list(self, components: list[Component]) -> None:
+    def write_list(self, components: list[Component]) -> None:
+        """Write one padded line per component, then the count.
+
+        Args:
+            components: The components to list, in the order to print them.
+        """
         tag_width = max(len(c.tag) for c in components)
         package_width = max(len(c.package) for c in components)
         for component in components:
@@ -170,7 +175,15 @@ class Command(BaseCommand):
         self.stdout.write(f"{len(components)} {noun}")
 
     @staticmethod
-    def _as_dict(component: Component) -> dict:
+    def as_dict(component: Component) -> dict:
+        """Return the list fields of one component, ready for JSON.
+
+        Args:
+            component: The component to describe.
+
+        Returns:
+            Its name, tag, package, path, summary and overrides.
+        """
         has_description = bool(component.documentation.description)
         return {
             "name": component.name,
