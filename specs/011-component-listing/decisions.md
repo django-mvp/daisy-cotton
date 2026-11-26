@@ -25,3 +25,11 @@ A project's own template folder usually overrides a package's component, and bet
 ## Hidden props are shown
 
 The gallery's `hidden` marker hides a prop from the gallery's interactive controls. A developer reading the documentation still needs to know the prop exists, so it is shown and marked hidden.
+
+## Housekeeping on this branch
+
+Three conformance repairs that main needed before the build could start green: `ruff-base.toml` re-copied from the shared templates (with the repo's own carve-outs moved to `extend-per-file-ignores`, which merges rather than replaces), `docs/brainstorm.md` moved to `docs/developer/`, and the documentation standard added under `docs/contributing/standards/` with a pointer from Article VI. None changes behaviour.
+
+## Design review outcome
+
+No critical or high findings. Applied as plan and task edits: a malformed-annotation test (DR-001), automated checks for SC-001 and SC-004 under django-cotton's real loader chain (DR-002, DR-004), an app-against-app override test in both orders (DR-003), unreachable file names left out (DR-005), the copied parser exempt from docstring rules so it stays verbatim (DR-006), the private-folder check limited to parts below `COTTON_DIR` (DR-007), descriptions parsed once at list time (DR-008), slot example content in the JSON test (DR-010). DR-009: the worktree's environment has the locked versions, django-cotton 2.9.0 and django-cotton-gallery 1.0.1.
