@@ -20,8 +20,8 @@ NO_DESCRIPTION = "—"
 _FIRST_SENTENCE = re.compile(r"(.+?[.!?])(?=\s+[A-Z])", re.S)
 _TAG_REFERENCE = re.compile(r"<c-([\w.-]+)|\{%\s*cotton\s+([\w.-]+)")
 _NOT_COMPONENTS = frozenset({"vars", "component"})
-SUGGESTION_LIMIT = 5
-SUGGESTION_CUTOFF = 0.6
+_SUGGESTION_LIMIT = 5
+_SUGGESTION_CUTOFF = 0.6
 
 
 @dataclass(frozen=True)
@@ -177,7 +177,7 @@ class ComponentCatalog:
                 return component
         by_normalised = {self._normalise(c.name): c.name for c in components}
         close = difflib.get_close_matches(
-            wanted, by_normalised, n=SUGGESTION_LIMIT, cutoff=SUGGESTION_CUTOFF
+            wanted, by_normalised, n=_SUGGESTION_LIMIT, cutoff=_SUGGESTION_CUTOFF
         )
         raise ComponentNotFound(name, tuple(by_normalised[n] for n in close))
 

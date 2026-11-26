@@ -105,11 +105,35 @@ Each line gives the tag to write, the package it comes from (an app label, or `p
 | `term` | Keep components whose name contains it, ignoring case. A hyphen matches an underscore unless `COTTON_SNAKE_CASED_NAMES` is `False`. |
 | `--text WORDS` | Keep components whose description contains the words, ignoring case. |
 | `--package LABEL` | Keep one package's components. |
-| `--json` | Print a JSON array of `name`, `tag`, `package`, `path`, `summary` and `overrides`. |
+| `--show NAME` | Print one component's documentation instead of the list. It ignores the term and the filters. |
+| `--json` | Print a JSON array of `name`, `tag`, `package`, `path`, `summary` and `overrides`. With `--show`, print one object. |
 
 Every option combines with the others. A term that matches nothing prints a message and exits successfully. Files and folders that start with `_`, and files that no tag can reach (a `-` in the path while names are snake-cased, or a `.` in a file name), are not listed. The command follows the project's `COTTON_DIR` setting.
 
-The same list is available from Python. `ComponentCatalog().search("card")` returns `Component` records in name order, each with `name`, `tag`, `package`, `path`, `overrides` and `summary`. `search` also takes `text=` and `package=`, and `components()` returns every component.
+### Read one component's documentation
+
+Run `python manage.py cotton_components --show card` to learn how to use a component without opening its file. It prints the tag, the file that renders, the package, the packages whose copies it overrides, the full description, every prop and every slot, and whether the component passes extra attributes to its element. It never prints the template body.
+
+```console
+$ python manage.py cotton_components --show card.title
+<c-card.title>
+File: /…/daisy_cotton/templates/cotton/card/title.html
+Package: daisy_cotton
+Used by 3 templates (dynamic <c-component is="…"> references are not counted)
+
+Heading for a card.
+
+Props: none
+Slots:
+  (default)  — The heading text.
+Passes extra attributes to its element.
+```
+
+A prop line gives its name, type, options, default and description, then `required`, `deprecated: <message>` or `hidden` when the annotation sets them. A slot line gives its name, or `(default)`, its description and its example content. A component with no annotations shows `—` for its description, `Props: none` and `Slots: none`.
+
+The count is the number of template files, in every folder the project loads templates from, that write `<c-name` or `{% cotton name %}`. Templates inside a `COTTON_DIR` folder, so other components, are not counted, and neither are dynamic `<c-component is="…">` references. A name that matches no component stops with an error that names it and lists up to five of the closest names. `--show NAME --json` prints one object with `name`, `tag`, `package`, `path`, `summary`, `overrides`, `description`, `props`, `slots`, `accepts_attrs`, `uses` and `use_paths`. `summary` and `description` are `null` when there is no description.
+
+The same list is available from Python. `ComponentCatalog().search("card")` returns `Component` records in name order, each with `name`, `tag`, `package`, `path`, `overrides` and `summary`. `search` also takes `text=` and `package=`, and `components()` returns every component. `get("card.title")` returns one component, or raises `ComponentNotFound`, whose `name` and `suggestions` say what was asked and which names are close. `uses(component)` returns the paths of the page templates that use it, and `component.documentation` holds its parsed props, slots and description.
 
 ## Calendar
 
