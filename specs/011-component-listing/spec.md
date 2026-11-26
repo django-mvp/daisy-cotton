@@ -67,7 +67,7 @@ A developer, or a coding agent, about to write a page needs a card for an author
 5. **Given** `cotton/card/index.html` and `cotton/card/title.html`, **When** the list prints, **Then** they appear as `card` and `card.title`.
 6. **Given** both `cotton/stat.html` and `cotton/stat/index.html` in one folder, **When** the list prints, **Then** `stat` appears once, from `stat.html`.
 7. **Given** a project that overrides daisy-cotton's `card` in its own template folder, **When** the list prints, **Then** `card` appears once, from `project`, and its line says it overrides `daisy_cotton`.
-8. **Given** a project whose settings set `COTTON_DIR = "components"`, **When** the command runs, **Then** it lists the components under `components/` in each template folder, and nothing under any `cotton/` folder.
+8. **Given** a project whose settings set `COTTON_DIR = "components"`, **When** the command runs, **Then** it lists the components under `components/` in each template folder, and also those under `cotton/` when the installed django-cotton falls back to that folder for a name `components/` does not provide. A name found in both is the `components/` copy.
 9. **Given** a component with no `@description`, **When** the list prints, **Then** its line shows an em dash in place of the description.
 10. **Given** a file under `cotton/_partials/`, **When** the list prints, **Then** it is not listed.
 11. **Given** `--text "author"`, **When** the command runs, **Then** it lists only components whose description contains "author", ignoring case. Given a name term as well, it lists only components that match both.
@@ -106,7 +106,7 @@ Having found `card.title`, the developer runs `manage.py cotton_components --sho
 - A template folder that does not exist, or a `cotton` folder that holds no `.html` files, contributes nothing and raises no error.
 - A component file that cannot be read as text is listed with an em dash and does not stop the command.
 - An annotation the parser cannot read (a malformed `@prop`) is left out of the documentation, and the rest of the component's documentation still prints.
-- A project that sets `COTTON_SNAKE_CASED_NAMES = False` keeps hyphens and underscores distinct when matching a term to a name.
+- A project that sets `COTTON_SNAKE_CASED_NAMES = False` keeps hyphens and underscores distinct when matching a term to a name, except where the installed django-cotton itself falls back to the snake-cased file under `cotton/`: such a component is found by its hyphenated name too.
 - A project with `APP_DIRS` turned off, and no `app_directories` loader, gets no components from installed apps, because it cannot render them either.
 - A description's first sentence ends at the first full stop followed by a space and a capital letter, or at the end of the description, so a version number ("v1.2") or an abbreviation inside a sentence does not cut it short.
 
@@ -117,7 +117,7 @@ Having found `card.title`, the developer runs `manage.py cotton_components --sho
 **Finding components**
 
 - **FR-001**: The package MUST provide a `cotton_components` management command, available in any project that has `daisy_cotton` in `INSTALLED_APPS`. *(US1, US2)*
-- **FR-002**: The command MUST find components in the folders, and in the order, that the project's template loaders search, under the project's `COTTON_DIR` setting (default `cotton`). *(US1)*
+- **FR-002**: The command MUST find components in the folders, and in the order, that the project's template loaders search, under the project's `COTTON_DIR` setting (default `cotton`), and under `cotton/` with snake-cased names wherever the installed django-cotton falls back to it. *(US1)*
 - **FR-003**: Each component's name MUST be the name django-cotton resolves from a tag: folders joined with dots, `<folder>/index.html` named after its folder, and a file beside a folder of the same name winning over the folder's `index.html`. *(US1)*
 - **FR-004**: A component provided by more than one folder MUST be listed once, as the copy the template loaders find first, recording the package of each copy it overrides. *(US1, US2)*
 - **FR-005**: Each component MUST record its package: the label of the installed app whose `templates/` folder holds it, or `project` for a project-level template folder. *(US1, US2)*
@@ -132,7 +132,7 @@ Having found `card.title`, the developer runs `manage.py cotton_components --sho
 **One component's documentation**
 
 - **FR-010**: `--show <name>` MUST print the named component's tag, file path, package, any packages it overrides, full description, every prop (name, type, options, default, required, deprecated, hidden, description), every slot (name or default, description, example content) and whether it passes extra attributes to its element. It MUST NOT print the template body. *(US2)*
-- **FR-011**: `--show` MUST print the number of template files, in every folder the project loads templates from, that reference the component by `<c-name` or `{% cotton name %}`, excluding every template inside a `COTTON_DIR` folder, and MUST state that dynamic references are not counted. *(US2)*
+- **FR-011**: `--show` MUST print the number of template files, in every folder the project loads templates from, that reference the component by `<c-name` or `{% cotton name %}`, excluding every template inside a folder components are loaded from (`COTTON_DIR`, and `cotton/` where django-cotton falls back to it), and MUST state that dynamic references are not counted. *(US2)*
 - **FR-012**: `--show` with a name that is not a component MUST exit with an error that names the term and lists up to five components with the closest names. *(US2)*
 
 **Both**
