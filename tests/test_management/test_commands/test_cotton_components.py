@@ -274,10 +274,14 @@ class TestCottonComponentsShowText:
         assert "<b>Body</b>" in output
 
     def test_says_whether_extra_attributes_are_passed(self, rich):
-        accepted = run("--show", "rich").splitlines()[-1]
-        refused = run("--show", "card").splitlines()[-1]
+        rich.write_text(RICH.replace("{{ attrs }}", ""), encoding="utf-8")
+        refused = run("--show", "rich").splitlines()
+        rich.write_text(RICH, encoding="utf-8")
+        accepted = run("--show", "rich").splitlines()
 
-        assert accepted != refused
+        assert len(accepted) == len(refused)
+        differing = [a for a, r in zip(accepted, refused, strict=True) if a != r]
+        assert differing == [accepted[-1]]
 
     def test_names_the_packages_it_overrides(self, configured_project):
         package_line = run("--show", "card").splitlines()[2]
