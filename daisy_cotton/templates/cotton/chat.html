@@ -10,8 +10,8 @@
 {# @slot:header Anonymous <time>12:45</time> — The speaker's name and a time, shown in chat-header. #}
 {# @slot:footer Delivered — A delivery status, shown in chat-footer. #}
 {% load daisy_cotton %}
-<c-vars placement="start" variant="" image="" header="" footer="" class="" />
-<div class="chat {% variation placement "chat" "start,end" %} {{ class }}"
+<c-vars placement="start" variant="" image="" header="" footer="" class:merge="chat" />
+<div class="{{ class }} {% variation placement "chat" "start,end" %}"
      {{ attrs }}>
   {% if image %}<div class="chat-image">{{ image }}</div>{% endif %}
   {% if header %}<div class="chat-header">{{ header }}</div>{% endif %}

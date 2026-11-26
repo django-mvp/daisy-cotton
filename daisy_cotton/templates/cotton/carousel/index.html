@@ -11,8 +11,8 @@
   gallery's inline preview cannot follow them; use this entry's raw view.
 {% endcomment %}
 {% load i18n daisy_cotton %}
-<c-vars snap="" horizontal="" vertical="" aria-label="" class="" />
-<div class="carousel {% variation snap "carousel" "start,center,end" %} {% responsive horizontal "carousel-horizontal" %} {% responsive vertical "carousel-vertical" %} {{ class }}"
+<c-vars snap="" horizontal="" vertical="" aria-label="" class:merge="carousel" />
+<div class="{{ class }} {% variation snap "carousel" "start,center,end" %} {% responsive horizontal "carousel-horizontal" %} {% responsive vertical "carousel-vertical" %}"
      role="region"
      tabindex="0"
      aria-roledescription="{% trans "carousel" %}"

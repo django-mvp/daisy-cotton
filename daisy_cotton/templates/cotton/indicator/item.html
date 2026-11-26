@@ -7,5 +7,5 @@
   word adds nothing and does not hide the known one beside it.
 {% endcomment %}
 {% load daisy_cotton %}
-<c-vars placement="" class />
-<span class="indicator-item {% for p in placement.split %}{% variation p 'indicator' 'start,center,end,top,middle,bottom' %} {% endfor %}{{ class }}" {{ attrs }}>{{ slot }}</span>
+<c-vars placement="" class:merge="indicator-item" />
+<span class="{{ class }} {% for p in placement.split %}{% variation p 'indicator' 'start,center,end,top,middle,bottom' %} {% endfor %}" {{ attrs }}>{{ slot }}</span>

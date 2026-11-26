@@ -7,5 +7,5 @@
   action) is the project's markup in the slot. The background image is the
   caller's style attribute, which reaches the root through attrs.
 {% endcomment %}
-<c-vars overlay="" class />
-<div class="hero {{ class }}" {{ attrs }}>{% if overlay %}<div class="hero-overlay" aria-hidden="true"></div>{% endif %}<div class="hero-content">{{ slot }}</div></div>
+<c-vars overlay="" class:merge="hero" />
+<div class="{{ class }}" {{ attrs }}>{% if overlay %}<div class="hero-overlay" aria-hidden="true"></div>{% endif %}<div class="hero-content">{{ slot }}</div></div>

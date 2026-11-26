@@ -6,16 +6,16 @@
 {# @prop disabled:boolean | description:"Show the tab as unavailable. A link loses its href and a button is disabled." #}
 {# @prop class:text | description:"Extra classes added to the tab." #}
 {# @slot — Extra content shown after the text, or the panel shown when a radio tab is selected. #}
-<c-vars text href="" name="" active="" disabled="" class />
+<c-vars text href="" name="" active="" disabled="" class:merge="tab" />
 {% if href %}
   <a {% if not disabled %}href="{{ href }}"{% else %}role="link" aria-disabled="true"{% endif %}
-     class="tab{% if active %} tab-active{% endif %}{% if disabled %} tab-disabled{% endif %} {{ class }}"
+     class="{{ class }}{% if active %} tab-active{% endif %}{% if disabled %} tab-disabled{% endif %}"
      {% if active %}aria-current="page"{% endif %}
      {{ attrs }}>{{ text }}{{ slot }}</a>
 {% elif name %}
   <input type="radio"
          name="{{ name }}"
-         class="tab {{ class }}"
+         class="{{ class }}"
          aria-label="{{ text }}"
          {% if active %}checked{% endif %}
          {% if disabled %}disabled{% endif %}
@@ -24,7 +24,7 @@
 {% else %}
   <button type="button"
           role="tab"
-          class="tab{% if active %} tab-active{% endif %}{% if disabled %} tab-disabled{% endif %} {{ class }}"
+          class="{{ class }}{% if active %} tab-active{% endif %}{% if disabled %} tab-disabled{% endif %}"
           aria-selected="{% if active %}true{% else %}false{% endif %}"
           {% if disabled %}disabled{% endif %}
           {{ attrs }}>{{ text }}{{ slot }}</button>

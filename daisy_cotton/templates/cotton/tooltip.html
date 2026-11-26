@@ -9,9 +9,9 @@
 {# @slot <c-button circle icon="bi bi-share" aria-label="Share" /> — The trigger, wrapped by the tooltip. #}
 {# @slot:content <kbd>Ctrl</kbd>+C to copy — Rich hint content, replacing tip. #}
 {% load daisy_cotton %}
-<c-vars tip="" content="" placement="" variant="" open="" id="" class="" />
+<c-vars tip="" content="" placement="" variant="" open="" id="" class:merge="tooltip" />
 {# djlint:off #}
-<div class="tooltip {% for word in placement.split %}{% variation word "tooltip" "top,bottom,left,right,start,center,end" %} {% endfor %}{% variation variant "tooltip" "primary,secondary,accent,info,success,warning,error" %}{% if open %} tooltip-open{% endif %} {{ class }}" {{ attrs }}>
+<div class="{{ class }} {% for word in placement.split %}{% variation word "tooltip" "top,bottom,left,right,start,center,end" %} {% endfor %}{% variation variant "tooltip" "primary,secondary,accent,info,success,warning,error" %}{% if open %} tooltip-open{% endif %}" {{ attrs }}>
   {{ slot }}
   <div class="tooltip-content" role="tooltip"{% if id %} id="{{ id }}"{% endif %}>{% if content.strip %}{{ content }}{% else %}{{ tip }}{% endif %}</div>
 </div>

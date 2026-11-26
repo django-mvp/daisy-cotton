@@ -7,6 +7,10 @@ runs the same linter over the package's ``cotton/`` directory and fails on any
 error or warning, so an undocumented or mis-documented component fails the
 build. Hints are advice, not faults, and never block.
 
+django-cotton-gallery 1.0.1 reads ``class:merge="…"`` in ``<c-vars>`` as a
+second prop named ``merge`` and reports it as undocumented. That one finding is
+ignored (issue #177). Every other finding still fails.
+
 Only the gallery's pure modules are imported. The gallery app itself is not in
 ``INSTALLED_APPS``, so its start-up notice never prints during the suite.
 """
@@ -41,7 +45,18 @@ class GalleryLint:
     @staticmethod
     def blocking(component_report):
         """Findings that fail the suite: errors and warnings, never hints."""
-        return [i for i in component_report.issues if i.severity in BLOCKING]
+        return [
+            i
+            for i in component_report.issues
+            if i.severity in BLOCKING and not GalleryLint.is_merge_misread(i)
+        ]
+
+    @staticmethod
+    def is_merge_misread(issue):
+        """The gallery's report of ``class:merge`` as an undocumented ``merge`` prop."""
+        return issue.rule == "missing-annotation" and issue.message.startswith(
+            "`merge`:"
+        )
 
     @staticmethod
     def describe(issue):

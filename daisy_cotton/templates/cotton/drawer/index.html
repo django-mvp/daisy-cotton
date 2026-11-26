@@ -9,8 +9,8 @@
 {# @slot:side <ul class="menu bg-base-200 min-h-full w-80 p-4"><li><a>Item 1</a></li><li><a>Item 2</a></li></ul> — The sidebar content, shown when the drawer is open. #}
 {# @trigger <c-drawer.button drawer="demo-drawer">Open sidebar</c-drawer.button> — Opens the drawer whose id is demo-drawer. It sits in the page content, where the focus ring shows. #}
 {% load i18n daisy_cotton %}
-<c-vars id="" open="" placement="" class side_class="" side="" />
-<div class="drawer {% if open %}{% responsive open 'drawer-open' %}{% endif %} {% variation placement 'drawer' 'end' %} {{ class }}"
+<c-vars id="" open="" placement="" class:merge="drawer" side_class="" side="" />
+<div class="{{ class }} {% if open %}{% responsive open 'drawer-open' %}{% endif %} {% variation placement 'drawer' 'end' %}"
      {{ attrs }}>
   <input id="{{ id }}" type="checkbox" class="drawer-toggle" aria-label="{% trans "Toggle sidebar" %}" />
   <div class="drawer-content">{{ slot }}</div>

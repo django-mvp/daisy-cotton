@@ -9,8 +9,8 @@
 {# @prop input_class:text | description:"Extra classes added to the input, such as validator for validation styling." #}
 {# @prop class:text | description:"Extra classes added to the label that carries the boxes." #}
 {% load i18n daisy_cotton %}
-<c-vars length="6" label="" variant="" size="" joined="" pattern="" inputmode="numeric" input_class="" class="" />
+<c-vars length="6" label="" variant="" size="" joined="" pattern="" inputmode="numeric" input_class="" class:merge="otp" />
 {% count_range length 6 as boxes %}{% variation variant "otp" "neutral,primary,secondary,accent,info,success,warning,error" as variant_class %}{% variation size "otp" "xs,sm,md,lg,xl" as size_class %}
 {# djlint:off #}
-<label class="otp {{ variant_class }} {{ size_class }}{% if joined %} otp-joined{% endif %} {{ class }}">{% for box in boxes %}<span></span>{% endfor %}<input type="text" maxlength="{{ boxes|length }}" pattern="{% if pattern %}{{ pattern }}{% else %}[0-9]{% templatetag openbrace %}{{ boxes|length }}{% templatetag closebrace %}{% endif %}" inputmode="{{ inputmode }}" autocomplete="one-time-code"{% if input_class %} class="{{ input_class }}"{% endif %} {{ attrs }}><small class="sr-only">{% if label %}{{ label }}{% else %}{% trans "Verification code" %}{% endif %}</small></label>
+<label class="{{ class }} {{ variant_class }} {{ size_class }}{% if joined %} otp-joined{% endif %}">{% for box in boxes %}<span></span>{% endfor %}<input type="text" maxlength="{{ boxes|length }}" pattern="{% if pattern %}{{ pattern }}{% else %}[0-9]{% templatetag openbrace %}{{ boxes|length }}{% templatetag closebrace %}{% endif %}" inputmode="{{ inputmode }}" autocomplete="one-time-code"{% if input_class %} class="{{ input_class }}"{% endif %} {{ attrs }}><small class="sr-only">{% if label %}{{ label }}{% else %}{% trans "Verification code" %}{% endif %}</small></label>
 {# djlint:on #}

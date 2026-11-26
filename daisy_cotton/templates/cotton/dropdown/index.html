@@ -12,9 +12,9 @@
         placement=""
         content_class=""
         button=""
-        class="" />
+        class:merge="inline-block" />
 {% unique_id "dropdown" as generated_id %}{% firstof id generated_id as panel_id %}
-<div class="inline-block {{ class }}" {% if button %}{{ attrs }}{% endif %}>
+<div class="{{ class }}" {% if button %}{{ attrs }}{% endif %}>
   {% if button %}
     {{ button }}
   {% else %}

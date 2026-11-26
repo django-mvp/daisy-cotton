@@ -117,16 +117,17 @@ which attributes to type (`text="Options"`, or `icon="bi bi-plus-lg" aria-label=
 
 **ADR:** none — an annotation choice for two components.
 
-## D6 — `class` gets an empty default too
+## D6 — `class` gets a default too
 
 Design review SPEC-001. Cotton pushes an enclosing component's attributes, its declared `class`
 included, into the context its inner components render in. A name declared with no default then
 reads that value. On main, `<c-dropdown class="mt-4">` puts `mt-4` on the wrapper and on the
 trigger button. For the FAB this would move the trigger away from its actions whenever a project
-positions the FAB with a class. Every template this feature touches declares `class=""`, and the
-dropdown and FAB tests assert the component's `class` is absent from the default trigger.
+positions the FAB with a class. Every template this feature touches declares `class` with a
+default, its base classes in `class:merge="…"`, and the dropdown and FAB tests assert the
+component's `class` is absent from the default trigger.
 
-**ADR:** none — the empty-default pattern already used for every other declared name.
+**ADR:** none — the default-value pattern already used for every other declared name.
 
 ## D7 — Design review applied
 

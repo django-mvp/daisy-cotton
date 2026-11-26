@@ -2,5 +2,5 @@
 {# @prop text:text | description:"The heading." #}
 {# @prop class:text | description:"Extra classes added to the list item." #}
 {# @slot — Extra content shown after the text. #}
-<c-vars text class />
-<li class="menu-title {{ class }}" {{ attrs }}>{{ text }}{{ slot }}</li>
+<c-vars text class:merge="menu-title" />
+<li class="{{ class }}" {{ attrs }}>{{ text }}{{ slot }}</li>

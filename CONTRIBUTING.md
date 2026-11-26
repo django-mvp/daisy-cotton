@@ -60,11 +60,35 @@ The annotation format is described in the gallery's [annotation reference](https
 A component is not done until it carries its annotations and the suite passes. In practice, a new or changed component in `daisy_cotton/templates/cotton/` needs:
 
 1. A `@description`, one `@prop` for each name in `<c-vars>`, and a `@slot` and `@slot:name` for each slot it renders, at the top of the template.
-2. `uv run python manage.py cotton_lint --warnings-as-errors` reporting no errors or warnings.
+2. `uv run python manage.py cotton_lint --warnings-as-errors` reporting no errors or warnings, apart from the `merge` warning described under "A component's own classes".
 3. `uv run pytest` and `uv run pre-commit run --all-files` passing.
 4. A line in the `[Unreleased]` section of the [CHANGELOG](CHANGELOG.md).
 
 A new template is picked up by the linter and both checks automatically. There is no list to add it to.
+
+## A component's own classes
+
+A component that takes a `class` declares its fixed base classes in `<c-vars>` with `class:merge`, and renders `{{ class }}` on its root element:
+
+```html
+<c-vars overlay="" class:merge="hero" />
+<div class="{{ class }}" {{ attrs }}>…</div>
+```
+
+Cotton puts the component's classes first and the caller's after them, so `<c-hero class="min-h-64" />` renders `class="hero min-h-64"`, and `<c-hero />` renders `class="hero"` with no trailing space.
+
+Classes that come from template tags, such as `{% variation %}`, `{% responsive %}` or `{% if %}`, stay in the element's `class` attribute after `{{ class }}`, and only the static ones go in `<c-vars>`:
+
+```html
+<c-vars text="" variant="" class:merge="badge" />
+<span class="{{ class }} {% variation variant "badge" "primary,secondary" %}" {{ attrs }}>{{ text }}</span>
+```
+
+`<c-badge variant="primary" class="ml-2" />` gets the classes `badge ml-2 badge-primary`, in that order. A component with no fixed base class, or whose base class changes with an attribute, declares `class=""` and writes `{{ class }}` where it belongs.
+
+`class` is the only attribute Cotton merges. Since `class` is declared, it never reaches `{{ attrs }}`.
+
+The gallery's linter does not know `class:merge` yet. It reads it as a second prop named `merge` and warns that no `@prop` documents it (issue #177). That warning is expected on these components. `tests/test_gallery_lint.py` ignores it and fails on anything else.
 
 ## Components used inside a sentence
 

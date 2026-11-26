@@ -6,8 +6,8 @@
 {# @prop offline:boolean | description:"Presence indicator: avatar-offline." #}
 {# @prop content_class:text | description:"Extra classes for the image frame, replacing the w-12 rounded-full default (plus bg-neutral text-neutral-content with no src) entirely. Sets the avatar's width and shape." #}
 {# @prop class:text | description:"Extra classes added to the avatar." #}
-<c-vars src="" alt="" placeholder="" online="" offline="" content_class="" class="" />
-<div class="avatar{% if not src %} avatar-placeholder{% endif %}{% if online %} avatar-online{% endif %}{% if offline %} avatar-offline{% endif %} {{ class }}"
+<c-vars src="" alt="" placeholder="" online="" offline="" content_class="" class:merge="avatar" />
+<div class="{{ class }}{% if not src %} avatar-placeholder{% endif %}{% if online %} avatar-online{% endif %}{% if offline %} avatar-offline{% endif %}"
      {{ attrs }}>
   <div class="{% if content_class %}{{ content_class }}{% else %}w-12 rounded-full{% if not src %} bg-neutral text-neutral-content{% endif %}{% endif %}">
     {% if src %}

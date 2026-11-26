@@ -9,8 +9,8 @@
 {# @slot:center <c-menu horizontal><c-menu.item href="#" text="Docs" active /><c-menu.item href="#" text="Blog" /></c-menu> — The centred section: the main links. #}
 {# @slot:end <c-button text="Sign in" /> — The section at the end of the bar: actions, a user menu. #}
 {% load i18n %}
-<c-vars class aria-label start="" center="" end="" />
-<nav class="navbar {{ class }}"
+<c-vars class:merge="navbar" aria-label start="" center="" end="" />
+<nav class="{{ class }}"
      aria-label="{% if aria_label %}{{ aria_label }}{% else %}{% trans "Main" %}{% endif %}"
      {{ attrs }}>
   {% if start %}<div class="navbar-start">{{ start }}</div>{% endif %}

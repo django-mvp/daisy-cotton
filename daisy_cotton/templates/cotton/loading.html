@@ -9,7 +9,7 @@
 {# @prop label:text | description:"Accessible name. Defaults to the translatable \"Loading\"." #}
 {# @prop class:text | description:"Extra classes added to the loading indicator, such as a text colour utility." #}
 {% load i18n daisy_cotton %}
-<c-vars spinner="" dots="" ring="" ball="" bars="" infinity="" size="" label="" class="" />
+<c-vars spinner="" dots="" ring="" ball="" bars="" infinity="" size="" label="" class:merge="loading" />
 {# djlint:off #}
-<span class="loading{% if spinner %} loading-spinner{% endif %}{% if dots %} loading-dots{% endif %}{% if ring %} loading-ring{% endif %}{% if ball %} loading-ball{% endif %}{% if bars %} loading-bars{% endif %}{% if infinity %} loading-infinity{% endif %} {% variation size "loading" "xs,sm,md,lg,xl" %} {{ class }}" role="status" aria-label="{% if label %}{{ label }}{% else %}{% trans "Loading" %}{% endif %}" {{ attrs }}></span>
+<span class="{{ class }}{% if spinner %} loading-spinner{% endif %}{% if dots %} loading-dots{% endif %}{% if ring %} loading-ring{% endif %}{% if ball %} loading-ball{% endif %}{% if bars %} loading-bars{% endif %}{% if infinity %} loading-infinity{% endif %} {% variation size "loading" "xs,sm,md,lg,xl" %}" role="status" aria-label="{% if label %}{{ label }}{% else %}{% trans "Loading" %}{% endif %}" {{ attrs }}></span>
 {# djlint:on #}

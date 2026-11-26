@@ -49,8 +49,8 @@ Ten new Cotton components (`drawer`, `drawer.button`, `footer`, `footer.nav`, `h
 Shared rules, applied everywhere below:
 
 - **Modifiers.** `variant` and `placement` go through `{% variation … %}` against daisyUI's list for that component (research R1), so an unknown value adds nothing and nothing raises (Edge Cases, FR-004). `horizontal`, `vertical` and `open` go through `{% responsive … %}`: bare gives the class, a breakpoint gives `<bp>:<class>`. `responsive` is narrowed so a string that is not one of `sm`, `md`, `lg`, `xl`, `2xl` gives nothing (FR-004, D10).
-- **Root.** Every component declares `class`, merges it into the root's class list, and spreads `{{ attrs }}` on the root (FR-003).
-- **Empty defaults.** Every declared name except `class` is declared with an empty default (`role=""`, `placement=""`), the `card/index.html` pattern. A name declared with no default falls through to the page's template context when the caller leaves it out, so a view with `role` or `title` in its context would otherwise rewrite the component's semantics (D9). The `<c-vars>` lines below show the names; each carries `=""`. Annotations give no `default:` for these, which the linter accepts.
+- **Root.** Every component declares `class`, with its base classes as `class:merge="…"`, merges it into the root's class list, and spreads `{{ attrs }}` on the root (FR-003).
+- **Empty defaults.** Every declared name other than `class` is declared with an empty default (`role=""`, `placement=""`), the `card/index.html` pattern. A name declared with no default falls through to the page's template context when the caller leaves it out, so a view with `role` or `title` in its context would otherwise rewrite the component's semantics (D9). The `<c-vars>` lines below show the names; each carries `=""`. Annotations give no `default:` for these, which the linter accepts.
 - **Caller `role`.** Where a component sets a role by default, `role` is declared in `<c-vars>` and written once: the caller's if given, else the default (research R6, D5).
 - **No script.** No `<script>`, no `on*=` attribute (FR-005). Each test module asserts it for its own components.
 

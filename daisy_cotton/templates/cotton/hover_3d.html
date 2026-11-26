@@ -2,10 +2,10 @@
 {# @prop href:text | description:"When given, the card renders as an <a> with this href instead of a <div>." #}
 {# @prop class:text | description:"Extra classes added to the card." #}
 {# @slot <figure><img src="https://img.daisyui.com/images/stock/creditcard.webp" alt="A blue credit card"></figure> — An image that tilts toward the pointer as it moves across the card. #}
-<c-vars href="" class="" />
+<c-vars href="" class:merge="hover-3d" />
 {# djlint:off #}
 {% with element=href|yesno:"a,div" %}
   {# djlint:off #}
-  <{{ element }}{% if href %} href="{{ href }}"{% endif %} class="hover-3d {{ class }}" {{ attrs }}>{{ slot }}<div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div></{{ element }}>
+  <{{ element }}{% if href %} href="{{ href }}"{% endif %} class="{{ class }}" {{ attrs }}>{{ slot }}<div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div><div aria-hidden="true"></div></{{ element }}>
   {# djlint:on #}
 {% endwith %}

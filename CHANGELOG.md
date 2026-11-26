@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- django-cotton 2.9 or later is now required, up from 2.6. 2.9.0 fixes attribute injection
+  through double-quoted dynamic attribute values, following on from the fix in 2.7.1.
+- Components declare their base classes with django-cotton's `class:merge`, so a component whose
+  classes are all fixed, such as `hero` or `stat`, no longer ends its `class` attribute with a
+  space when it is given no `class`. Where a component also adds
+  classes from its attributes (a `variant`, a `size`, a modifier such as `outline`), the caller's
+  classes now come straight after the base class and before those, so `<c-badge variant="primary"
+  class="ml-2">` gets the classes `badge ml-2 badge-primary`, in that order. The classes on each element are
+  otherwise unchanged.
+
 ## [v0.2.1] - 2026-11-26
 
 ### Added

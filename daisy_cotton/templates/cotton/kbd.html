@@ -7,4 +7,4 @@
 
   Laid out to emit no whitespace around the element, with no final newline:
   see "Components used inside a sentence" in CONTRIBUTING.md.
-{% endcomment %}<c-vars text="" size="" class="" /><kbd class="kbd {% variation size "kbd" "xs,sm,md,lg,xl" %} {{ class }}" {{ attrs }}>{{ text }}{{ slot }}</kbd>
+{% endcomment %}<c-vars text="" size="" class:merge="kbd" /><kbd class="{{ class }} {% variation size "kbd" "xs,sm,md,lg,xl" %}" {{ attrs }}>{{ text }}{{ slot }}</kbd>

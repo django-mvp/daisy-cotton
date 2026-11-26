@@ -14,8 +14,8 @@
 {# @slot:figure <c-hover_gallery><img src="https://img.daisyui.com/images/stock/daisyui-hat-1.webp" alt="A brimmed felt hat"><img src="https://img.daisyui.com/images/stock/daisyui-hat-2.webp" alt="A knit beanie"><img src="https://img.daisyui.com/images/stock/daisyui-hat-3.webp" alt="A straw sun hat"><img src="https://img.daisyui.com/images/stock/daisyui-hat-4.webp" alt="A baseball cap"></c-hover_gallery> — Content in a <figure> before the body, here a gallery of four images. #}
 {# @slot:actions <c-button text="Cart "><c-badge variant="secondary">3</c-badge></c-button> — Content in a card-actions row at the foot of the body. #}
 {% load daisy_cotton %}
-<c-vars title="" figure="" actions="" size="" border="" dash="" side="" image-full="" content_class="" class="" />
-<div class="card {% variation size "card" "xs,sm,md,lg,xl" %}{% if border %} card-border{% endif %}{% if dash %} card-dash{% endif %} {% responsive side "card-side" %}{% if image_full %} image-full{% endif %} {{ class }}"
+<c-vars title="" figure="" actions="" size="" border="" dash="" side="" image-full="" content_class="" class:merge="card" />
+<div class="{{ class }} {% variation size "card" "xs,sm,md,lg,xl" %}{% if border %} card-border{% endif %}{% if dash %} card-dash{% endif %} {% responsive side "card-side" %}{% if image_full %} image-full{% endif %}"
      {{ attrs }}>
   {% if figure %}<figure>{{ figure }}</figure>{% endif %}
   <div class="card-body {{ content_class }}">

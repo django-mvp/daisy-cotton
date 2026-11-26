@@ -2,5 +2,5 @@
 {# @prop class:text | description:"Extra classes added to the slide, such as w-full for a full-width slide." #}
 {# @slot <img class="w-full" src="https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp" alt="A city skyline at dusk"> — The slide's content, such as an image. #}
 {% load i18n %}
-<c-vars class="" />
-<div class="carousel-item {{ class }}" role="group" aria-roledescription="{% trans "slide" %}" {{ attrs }}>{{ slot }}</div>
+<c-vars class:merge="carousel-item" />
+<div class="{{ class }}" role="group" aria-roledescription="{% trans "slide" %}" {{ attrs }}>{{ slot }}</div>

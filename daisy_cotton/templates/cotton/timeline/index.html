@@ -6,6 +6,6 @@
 {# @prop class:text | description:"Extra classes added to the timeline." #}
 {# @slot <c-timeline.item start="1984" end="First Macintosh" box><c-slot name="middle"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></c-slot></c-timeline.item><c-timeline.item start="1998" end="iMac G3" box><c-slot name="middle"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></c-slot></c-timeline.item><c-timeline.item start="2001" end="iPod" box><c-slot name="middle"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></c-slot></c-timeline.item> — Three events, each with a date, an icon hidden from assistive technology in the middle, and boxed text. #}
 {% load daisy_cotton %}
-<c-vars vertical="" horizontal="" compact="" snap-icon="" class="" />
-<ul class="timeline {% responsive vertical "timeline-vertical" %} {% responsive horizontal "timeline-horizontal" %}{% if compact %} timeline-compact{% endif %}{% if snap_icon %} timeline-snap-icon{% endif %} {{ class }}"
+<c-vars vertical="" horizontal="" compact="" snap-icon="" class:merge="timeline" />
+<ul class="{{ class }} {% responsive vertical "timeline-vertical" %} {% responsive horizontal "timeline-horizontal" %}{% if compact %} timeline-compact{% endif %}{% if snap_icon %} timeline-snap-icon{% endif %}"
     {{ attrs }}>{{ slot }}</ul>

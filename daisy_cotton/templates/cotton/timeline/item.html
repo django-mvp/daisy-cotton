@@ -7,8 +7,8 @@
 {# @slot:start — A date or label in timeline-start, in place of the start attribute. #}
 {# @slot:middle — Content in timeline-middle, usually an icon. #}
 {# @slot:end — A label or description in timeline-end, in place of the end attribute. #}
-<c-vars start="" middle="" end="" box="" class="" />
-<li class="group/item {{ class }}" {{ attrs }}>
+<c-vars start="" middle="" end="" box="" class:merge="group/item" />
+<li class="{{ class }}" {{ attrs }}>
   <hr class="group-first/item:hidden" aria-hidden="true" />
   {% if start %}<div class="timeline-start{% if box == "start" %} timeline-box{% endif %}">{{ start }}</div>{% endif %}
   {% if middle %}<div class="timeline-middle">{{ middle }}</div>{% endif %}
