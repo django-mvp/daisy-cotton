@@ -67,3 +67,9 @@ The repository's documentation check requires every new public name to be quoted
 The feature adds a management command and no page, so there is nothing to load in a browser.
 
 **ADR:** none — local to this feature
+
+## D12: The catalog follows django-cotton's fallback to `cotton/`
+
+django-cotton 2.9 renders a component from the default layout (`cotton/`, snake-cased file names) when the configured `COTTON_DIR` or hyphenated name finds no file. Earlier versions do not. The catalog follows whichever version is installed, by using django-cotton's own list of candidate paths when it has one, so the list keeps agreeing with what a page renders (Clarification Q1, SC-004). US1 scenario 8, the snake-cased edge case, FR-002 and FR-011 were corrected to say so. The runtime floor stays at django-cotton 2.6.
+
+**ADR:** none — a behaviour of this command that follows the installed django-cotton
