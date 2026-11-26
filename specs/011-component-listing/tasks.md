@@ -6,7 +6,7 @@
 
 **Every story's done-check**: each acceptance scenario has a test that fails when the behaviour is removed. Tests assert names, packages, paths, counts, option values and exit status, never wording: find a component's line by its tag, and read structured results through `--json` or the catalog's return values where possible. Tests that need several template folders use `override_settings` on `INSTALLED_APPS`, `TEMPLATES` and `COTTON_DIR` with the fixture apps under `tests/fixtures/` and folders under `tmp_path`. The full suite, pre-commit and `deptry` pass. Public names have Google-style docstrings. README and CHANGELOG lines are written in the story that adds the public name.
 
-## Phase 1: US1 — Find the components that fit a need (P1)
+## Phase 1: User Story 1 — Find the components that fit a need (P1)
 
 ### Group 1
 
@@ -14,7 +14,7 @@
 - [ ] T002 [US1] `daisy_cotton/catalog.py`: `Component`, `ComponentCatalog.folders()`, `components()`, `search()` per plan. Fixture apps `tests/fixtures/catalog_first` and `catalog_second`, each an app with `templates/cotton/`. Tests first in `tests/test_catalog.py` for US1 scenarios 1–12 at the catalog level: components from a project folder and both apps; `card`, `card.title`, `mvp.card` matched by `card` and `badge` not; case-insensitive; `hover-gallery` finding `hover_gallery`, and not finding it with `COTTON_SNAKE_CASED_NAMES=False`; `card/index.html` named `card`; sibling `stat.html` winning over `stat/index.html` with no override recorded; a project folder overriding an app's `card` (package `project`, overrides the app's label); `<name>.html` in a later folder winning over `<name>/index.html` in an earlier one; `COTTON_DIR="components"` reading only `components/`; summary `—` without `@description` and the first-sentence rule including a version number; `_partials/` and `_x.html` skipped and non-`.html` files ignored; `text` and `package` filters, alone and combined with a term; a folder that does not exist, and an app with `APP_DIRS=False` and no app-directories loader contributing nothing; an undecodable component file listed with `—` (FR-001–FR-009).
 - [ ] T003 [US1] `daisy_cotton/management/commands/cotton_components.py`, list shape and `--json` for the list (plan "List"). Tests first in `tests/test_management/test_commands/test_cotton_components.py` via `call_command`: every component's tag appears once, in name order, with its package; the count line equals the number listed; overrides noted on the overriding line; a term that matches nothing exits 0; `--json` gives one object per component with `name`, `tag`, `package`, `path`, `summary` and `overrides` (US1 scenarios 1, 7, 13, 14; FR-007, FR-014). README section for the list, the *Scope & philosophy* line, CONTEXT.md's **Component** line, CHANGELOG `Added` (FR-016).
 
-## Phase 2: US2 — Read one component's documentation (P2)
+## Phase 2: User Story 2 — Read one component's documentation (P2)
 
 ### Group 2
 
