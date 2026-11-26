@@ -136,7 +136,7 @@ For a range the same `value` is the two dates joined with a slash, such as `2026
 
 ## Prior art
 
-[labbhq/labb](https://github.com/labbhq/labb) is an actively maintained django-cotton + daisyUI 5 component library covering similar ground. It is a batteries-included framework — its own CLI, reactivity layer, icon system and project scaffolder — rather than a thin base layer, and daisy-cotton's purpose here is narrower: a dependency-free set of base primitives a project drops in alongside its own choices. See [docs/brainstorm.md](https://github.com/django-mvp/daisy-cotton/blob/main/docs/brainstorm.md) for the fuller reasoning.
+[labbhq/labb](https://github.com/labbhq/labb) is an actively maintained django-cotton + daisyUI 5 component library covering similar ground. It is a batteries-included framework — its own CLI, reactivity layer, icon system and project scaffolder — rather than a thin base layer, and daisy-cotton's purpose here is narrower: a dependency-free set of base primitives a project drops in alongside its own choices. See [docs/developer/brainstorm.md](https://github.com/django-mvp/daisy-cotton/blob/main/docs/developer/brainstorm.md) for the fuller reasoning.
 
 ## Contributing
 

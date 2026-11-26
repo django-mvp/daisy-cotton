@@ -80,5 +80,5 @@ default `GITHUB_TOKEN` cannot trigger `publish.yml` from a bot-created tag/relea
 Feature work follows a spec-driven process: spec → plan → tasks → implement → review → PR.
 Project standards and the quality bar live in `CONSTITUTION.md`.
 
-`docs/brainstorm.md` holds the working notes the package was founded on, chiefly the prior-art
+`docs/developer/brainstorm.md` holds the working notes the package was founded on, chiefly the prior-art
 survey. Those are conclusions, not ratified decisions.
