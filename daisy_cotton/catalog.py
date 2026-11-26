@@ -343,7 +343,7 @@ class ComponentCatalog:
         return ".".join(parts if is_file else parts[:-1])
 
     def written(self, name: str) -> str:
-        """The name as a template writes it in a tag.
+        """Return the name as a template writes it in a tag.
 
         With snake-cased names on, django-cotton reads a hyphen in a tag as an
         underscore in the file name, so the tag is written with hyphens:
