@@ -395,6 +395,16 @@ class TestComponentCatalogGet:
 
         assert ComponentCatalog().get("hover-gallery").name == "hover_gallery"
 
+    def test_a_hyphenated_name_gets_the_file_django_renders_when_snake_casing_is_off(
+        self, configure
+    ):
+        configure(COTTON_SNAKE_CASED_NAMES=False)
+
+        found = ComponentCatalog().get("hover-gallery")
+
+        rendered = CottonComponentNode._candidate_template_paths("hover-gallery", None)
+        assert found.path == Path(get_template(rendered[2]).origin.name).resolve()
+
     def test_the_name_ignores_case(self, configure):
         configure()
 
@@ -534,6 +544,37 @@ class TestComponentCatalogUses:
         write(project_dir, "components/user.html", "<c-badge />\n")
         write(project_dir, "cotton/fallback_user.html", "<c-badge />\n")
         page = write(project_dir, "pages/page.html", "<c-badge />\n")
+        configure(COTTON_DIR="components")
+        catalog = ComponentCatalog()
+
+        assert catalog.uses(catalog.get("badge")) == [page.resolve()]
+
+
+class TestComponentCatalogWithoutTheFallback:
+    """django-cotton before 2.9 has no list of candidate paths."""
+
+    @pytest.fixture(autouse=True)
+    def old_django_cotton(self, monkeypatch):
+        monkeypatch.setattr("daisy_cotton.catalog.CottonComponentNode", None)
+
+    def test_only_the_configured_folder_is_read(self, configure, project_dir):
+        write(project_dir, "components/chosen.html")
+        write(project_dir, "cotton/ignored.html")
+        configure(COTTON_DIR="components")
+
+        assert names(ComponentCatalog().components()) == ["chosen"]
+
+    def test_the_index_file_is_the_second_choice(self, configure, project_dir):
+        write(project_dir, "cotton/stat/index.html")
+        configure()
+
+        assert "stat" in names(ComponentCatalog().components())
+
+    def test_uses_counts_cotton_templates_as_pages_when_they_are_not_components(
+        self, configure, project_dir
+    ):
+        write(project_dir, "components/badge.html")
+        page = write(project_dir, "cotton/page.html", "<c-badge />\n")
         configure(COTTON_DIR="components")
         catalog = ComponentCatalog()
 
