@@ -60,7 +60,16 @@ class Command(BaseCommand):
             self.stdout.write("No component matches.")
 
     def show_component(self, name: str, *, as_json: bool) -> None:
-        """Print one component's documentation, as text or JSON."""
+        """Print one component's documentation, as text or JSON.
+
+        Args:
+            name: The component name as the user typed it.
+            as_json: Print one JSON object instead of text.
+
+        Raises:
+            CommandError: No component has the name. The message lists the
+                closest names.
+        """
         catalog = ComponentCatalog()
         try:
             component = catalog.get(name)
@@ -78,7 +87,16 @@ class Command(BaseCommand):
 
     @staticmethod
     def documentation_dict(component: Component, uses: list) -> dict:
-        """Collect the fields only one component's documentation carries."""
+        """Collect the fields only one component's documentation carries.
+
+        Args:
+            component: The component being documented.
+            uses: Paths of the page templates that use it.
+
+        Returns:
+            A JSON-ready dict of its description, props, slots, whether it
+            passes extra attributes, and its uses.
+        """
         parsed = component.documentation
         return {
             "description": parsed.description or None,
@@ -90,7 +108,12 @@ class Command(BaseCommand):
         }
 
     def write_documentation(self, component: Component, uses: list) -> None:
-        """Write the text form of one component's documentation."""
+        """Write the text form of one component's documentation.
+
+        Args:
+            component: The component being documented.
+            uses: Paths of the page templates that use it.
+        """
         parsed = component.documentation
         package = f"Package: {component.package}"
         if component.overrides:
@@ -120,7 +143,12 @@ class Command(BaseCommand):
         )
 
     def write_section(self, title: str, lines: list[str]) -> None:
-        """Write a heading and its indented lines, or the heading with `none`."""
+        """Write a heading and its indented lines, or the heading with `none`.
+
+        Args:
+            title: The section heading.
+            lines: The section's lines, without indentation.
+        """
         if not lines:
             self.stdout.write(f"{title}: none")
             return
@@ -130,7 +158,14 @@ class Command(BaseCommand):
 
     @staticmethod
     def prop_line(prop: Prop) -> str:
-        """One line for a prop: name, type, options, default, flags, description."""
+        """Format one prop: name, type, options, default, flags, description.
+
+        Args:
+            prop: The prop to describe.
+
+        Returns:
+            The prop on a single line.
+        """
         parts = [prop.name, prop.type]
         if prop.options:
             parts[-1] += f" [{', '.join(prop.options)}]"
@@ -147,7 +182,14 @@ class Command(BaseCommand):
 
     @staticmethod
     def slot_line(slot: Slot) -> str:
-        """One line for a slot: name or default, description, example content."""
+        """Format one slot: name or default, description, example content.
+
+        Args:
+            slot: The slot to describe.
+
+        Returns:
+            The slot on a single line.
+        """
         line = slot.name or "(default)"
         if slot.description:
             line += f"  — {slot.description}"

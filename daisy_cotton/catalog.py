@@ -167,7 +167,8 @@ class ComponentCatalog:
         """
         probe = getattr(CottonComponentNode, "_candidate_template_paths", None)
         if probe is not None:
-            return probe(name, None)
+            paths: tuple[str, ...] = probe(name, None)
+            return paths
         base = f"{self.cotton_dir}/{name.replace('.', '/')}"
         return (f"{base}.html", f"{base}/index.html")
 
@@ -246,7 +247,15 @@ class ComponentCatalog:
         return sorted(found)
 
     def refers_to(self, text: str, wanted: str) -> bool:
-        """Whether the template text names the component, already normalised."""
+        """Whether the template text names the component.
+
+        Args:
+            text: The template's source.
+            wanted: The component name, already normalised.
+
+        Returns:
+            True when a ``<c-name`` or ``{% cotton name %}`` tag names it.
+        """
         for match in TAG_REFERENCE.finditer(text):
             name = match.group(1) or match.group(2)
             if name not in NOT_COMPONENTS and self.normalise(name) == wanted:
@@ -254,11 +263,23 @@ class ComponentCatalog:
         return False
 
     def normalise(self, value: str) -> str:
-        """Lower-case a name and read hyphens as underscores."""
+        """Lower-case a name and read hyphens as underscores.
+
+        Args:
+            value: A component name.
+
+        Returns:
+            The name in the form names are compared in.
+        """
         return value.lower().replace("-", "_")
 
     def collect_folders(self, loaders, found: list[Path]) -> None:
-        """Append each loader's folders to ``found``, including wrapped loaders."""
+        """Append each loader's folders to ``found``, including wrapped loaders.
+
+        Args:
+            loaders: Template loaders, some of which wrap others.
+            found: Resolved folders so far. Extended in place, each folder once.
+        """
         for loader in loaders:
             get_dirs = getattr(loader, "get_dirs", None)
             if get_dirs is not None:
@@ -270,7 +291,11 @@ class ComponentCatalog:
 
     @staticmethod
     def package_labels() -> dict[Path, str]:
-        """Map each installed app's template folder to the app's label."""
+        """Map each installed app's template folder to the app's label.
+
+        Returns:
+            Resolved ``templates`` folder of every installed app, by its label.
+        """
         return {
             Path(config.path, "templates").resolve(): config.label
             for config in apps.get_app_configs()
