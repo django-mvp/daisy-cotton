@@ -73,3 +73,17 @@ The feature adds a management command and no page, so there is nothing to load i
 django-cotton 2.9 renders a component from the default layout (`cotton/`, snake-cased file names) when the configured `COTTON_DIR` or hyphenated name finds no file. Earlier versions do not. The catalog follows whichever version is installed, by using django-cotton's own list of candidate paths when it has one, so the list keeps agreeing with what a page renders (Clarification Q1, SC-004). US1 scenario 8, the snake-cased edge case, FR-002 and FR-011 were corrected to say so. The runtime floor stays at django-cotton 2.6.
 
 **ADR:** none — a behaviour of this command that follows the installed django-cotton
+
+## D13: Tests changed in the review fixes
+
+The review found tests that held the catalog to the configured folder only (COR-001), an agreement check that repeated the catalog's own lookup rule (TST-001), and an attributes check that could not fail (TST-002). Those tests were changed rather than added beside:
+
+- the `COTTON_DIR` test now expects the configured folder, then `cotton/`
+- the hyphenated-name tests with snake-casing off now expect `hover-gallery` to find `hover_gallery`
+- the usage test now excludes every folder components load from
+- the agreement check now asks django-cotton for its candidate paths and Django's loader for the file, under the plain settings, with overrides, with `COTTON_DIR="components"` and with snake-casing off
+- the attributes test compares a component's output with and without `{{ attrs }}`
+
+Each was run against the mutation it guards against and failed.
+
+**ADR:** none — local to this feature
