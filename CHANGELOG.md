@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `manage.py cotton_components`: lists every Cotton component the project can render, from its
+  own template folders and every installed package, in template-loader order. Each line gives the
+  tag, the package and the first sentence of the description. A term filters by name, `--text` by
+  description and `--package` by package, and `--json` prints the list as JSON.
+
 ## [v0.2.0] - 2026-10-19
 
 ### Added

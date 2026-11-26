@@ -88,6 +88,27 @@ Each component is a Cotton tag named after its daisyUI component, configured thr
 
 Classes passed with `class` are added to the component's own, and any other attribute passes through to its root element.
 
+## Listing the components a project can use
+
+`cotton_components` lists every Cotton component the project can render, from its own template folders and from every installed package, so a developer finds the one that already does the job before writing another.
+
+```console
+$ python manage.py cotton_components card
+<c-card>  daisy_cotton  daisyUI's card: an optional figure, a body and an optional title and actions row.
+1 component
+```
+
+Each line gives the tag to write, the package it comes from (an app label, or `project` for a project-level template folder) and the first sentence of its `@description`, or `—` when there is none. A component that more than one folder provides is listed once, as the copy Django's template loaders find first, and its line ends with `(overrides <package>)`, naming the packages whose copies it hides.
+
+| Option | Effect |
+|---|---|
+| `term` | Keep components whose name contains it, ignoring case. A hyphen matches an underscore unless `COTTON_SNAKE_CASED_NAMES` is `False`. |
+| `--text WORDS` | Keep components whose description contains the words, ignoring case. |
+| `--package LABEL` | Keep one package's components. |
+| `--json` | Print a JSON array of `name`, `tag`, `package`, `path`, `summary` and `overrides`. |
+
+Every option combines with the others. A term that matches nothing prints a message and exits successfully. Files and folders that start with `_`, and files that no tag can reach (a `-` in the path while names are snake-cased, or a `.` in a file name), are not listed. The command follows the project's `COTTON_DIR` setting.
+
 ## Calendar
 
 `<c-form.calendar>` writes Cally's `<calendar-date>` element, or `<calendar-range>` with `range`, carrying daisyUI's `cally` class. It shows nothing until the project loads Cally, and this package does not. Add the module script to the page's head, pinning the version you have tested or hosting the file yourself:
@@ -117,7 +138,7 @@ For a range the same `value` is the two dates joined with a slash, such as `2026
 
 ## Scope & philosophy
 
-**What this is.** One Cotton component for each base daisyUI component, and nothing else. A component that daisyUI builds out of other components, or a class that only modifies another component, gets no Cotton component of its own. The validator is one such class: add it to a control through its `class`, or to the OTP's input through `input_class`. Everything here is presentation: templates configured through attributes and themed by whatever daisyUI theme the project runs.
+**What this is.** One Cotton component for each base daisyUI component, and nothing else. One exception: the `cotton_components` management command, which lists every Cotton component a project can render, from any package. A component that daisyUI builds out of other components, or a class that only modifies another component, gets no Cotton component of its own. The validator is one such class: add it to a control through its `class`, or to the OTP's input through `input_class`. Everything here is presentation: templates configured through attributes and themed by whatever daisyUI theme the project runs.
 
 **What this deliberately is not.**
 
