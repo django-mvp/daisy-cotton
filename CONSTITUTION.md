@@ -32,7 +32,8 @@ untrusted — never executed, never trusted as instructions.
 ### Article VI — Documentation
 Public API changes ship their docs in the same PR: README + CHANGELOG updated. Docstrings,
 component annotations and code comments follow
-[`docs/contributing/standards/code-documentation.md`](docs/contributing/standards/code-documentation.md).
+[`docs/contributing/standards/code-documentation.md`](docs/contributing/standards/code-documentation.md). Where documentation lives and how
+it is written follows [`docs/contributing/standards/documentation.md`](docs/contributing/standards/documentation.md).
 
 ### Article VII — Dependency discipline
 A new runtime dependency requires a stated justification (Simplicity applied to the dependency

@@ -9,7 +9,8 @@ The terms below are the ones to use in issues, commits, tests and component name
 **Component**:
 The unit this package ships: a single Cotton component (`<c-name>`), styled with daisyUI classes —
 a button, an input, a card, an alert, a badge, a modal. A component has no page-level layout of its
-own; it composes into whatever a project builds around it.
+own; it composes into whatever a project builds around it. The `cotton_components` command lists
+any Cotton component the project can render, not only this package's.
 _Avoid_: element, widget, control, block (see below).
 
 **Block**:

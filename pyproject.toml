@@ -99,11 +99,14 @@ extension = "html"
 [tool.ruff]
 extend = "ruff-base.toml"
 
-[tool.ruff.lint.per-file-ignores]
+[tool.ruff.lint.extend-per-file-ignores]
 "tests/*" = ["S101", "S105", "S106", "B017", "A001", "RUF059"]
 # The demo project is a demonstration target, never deployed: its settings
 # carry a literal SECRET_KEY on purpose.
 "demo/*" = ["S101", "S105", "S106"]
+# A verbatim copy of django-cotton-gallery's parser, kept free of edits so a later
+# re-copy is a plain diff.
+"daisy_cotton/annotations.py" = ["D"]
 
 [tool.mypy]
 files = ["daisy_cotton"]
@@ -122,6 +125,11 @@ plugins = ["mypy_django_plugin.main"]
 [tool.django-stubs]
 django_settings_module = "tests.settings"
 ignore_missing_model_attributes = "True"
+
+[tool.forge.docs]
+# A copy of django-cotton-gallery's annotation parser. Its names are not this
+# package's public API, and the copy stays verbatim so a re-copy is a plain diff.
+exempt-paths = ["daisy_cotton/annotations.py"]
 
 [tool.forge.conformance]
 # These tests exercise Cotton templates or the app registry, so there is no Python module to mirror.
