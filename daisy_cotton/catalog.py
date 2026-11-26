@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import difflib
 import re
 from dataclasses import dataclass
 from functools import cached_property
@@ -17,6 +18,10 @@ from daisy_cotton.annotations import AnnotationParser, ParsedComponent
 PROJECT_PACKAGE = "project"
 NO_DESCRIPTION = "—"
 _FIRST_SENTENCE = re.compile(r"(.+?[.!?])(?=\s+[A-Z])", re.S)
+_TAG_REFERENCE = re.compile(r"<c-([\w.-]+)|\{%\s*cotton\s+([\w.-]+)")
+_NOT_COMPONENTS = frozenset({"vars", "component"})
+SUGGESTION_LIMIT = 5
+SUGGESTION_CUTOFF = 0.6
 
 
 @dataclass(frozen=True)
@@ -55,6 +60,26 @@ class Component:
             return NO_DESCRIPTION
         match = _FIRST_SENTENCE.match(description)
         return match.group(1) if match else description
+
+
+class ComponentNotFound(LookupError):
+    """No component has the name asked for.
+
+    Attributes:
+        name: The name as it was asked for.
+        suggestions: Up to five real names that are close to it, closest first.
+    """
+
+    def __init__(self, name: str, suggestions: tuple[str, ...] = ()) -> None:
+        """Keep the name and the closest real names.
+
+        Args:
+            name: The name that matched no component.
+            suggestions: Real component names close to ``name``.
+        """
+        super().__init__(name)
+        self.name = name
+        self.suggestions = suggestions
 
 
 @dataclass(frozen=True)
@@ -130,6 +155,66 @@ class ComponentCatalog:
             and wanted_text in component.documentation.description.lower()
             and (not package or component.package == package)
         ]
+
+    def get(self, name: str) -> Component:
+        """Find the component a tag with this name renders.
+
+        Args:
+            name: Dotted name. Case is ignored, and hyphens match underscores when
+                snake-cased names are on.
+
+        Returns:
+            The matching component.
+
+        Raises:
+            ComponentNotFound: No component has the name. It carries up to five
+                close names.
+        """
+        components = self.components()
+        wanted = self._normalise(name)
+        for component in components:
+            if self._normalise(component.name) == wanted:
+                return component
+        by_normalised = {self._normalise(c.name): c.name for c in components}
+        close = difflib.get_close_matches(
+            wanted, by_normalised, n=SUGGESTION_LIMIT, cutoff=SUGGESTION_CUTOFF
+        )
+        raise ComponentNotFound(name, tuple(by_normalised[n] for n in close))
+
+    def uses(self, component: Component) -> list[Path]:
+        """Page templates that reference the component by tag.
+
+        Templates inside any folder's cotton directory are not counted, and a
+        dynamic ``<c-component is="...">`` reference cannot be matched to a name.
+
+        Args:
+            component: The component to look for.
+
+        Returns:
+            Paths of the templates that use it, once each, sorted.
+        """
+        wanted = self._normalise(component.name)
+        found: set[Path] = set()
+        for folder in self.folders():
+            components_root = folder / self.cotton_dir
+            for path in folder.rglob("*.html"):
+                if path.is_relative_to(components_root) or path in found:
+                    continue
+                try:
+                    text = path.read_text(encoding="utf-8")
+                except (UnicodeDecodeError, OSError):
+                    continue
+                if self._references(text, wanted):
+                    found.add(path)
+        return sorted(found)
+
+    def _references(self, text: str, wanted: str) -> bool:
+        """Whether the template text names the component, already normalised."""
+        for match in _TAG_REFERENCE.finditer(text):
+            name = match.group(1) or match.group(2)
+            if name not in _NOT_COMPONENTS and self._normalise(name) == wanted:
+                return True
+        return False
 
     def _normalise(self, value: str) -> str:
         """Lower-case a name, reading hyphens as underscores in snake-cased names."""

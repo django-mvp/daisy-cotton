@@ -1,11 +1,16 @@
 """Tests for the component catalog."""
 
+from pathlib import Path
+
 import pytest
 
-from daisy_cotton.catalog import ComponentCatalog
+from daisy_cotton.catalog import ComponentCatalog, ComponentNotFound
 
 FIRST = "tests.fixtures.catalog_first"
 SECOND = "tests.fixtures.catalog_second"
+FIRST_PAGES = (
+    Path(__file__).parent / "fixtures" / "catalog_first" / "templates" / "pages"
+)
 
 
 @pytest.fixture
@@ -353,3 +358,155 @@ class TestComponentCatalogSearch:
         catalog = ComponentCatalog()
 
         assert catalog.search() == catalog.components()
+
+
+class TestComponentCatalogGet:
+    def test_returns_the_component_with_that_exact_name(self, configure):
+        configure()
+
+        assert ComponentCatalog().get("card.title").name == "card.title"
+
+    def test_a_hyphen_finds_an_underscored_name(self, configure):
+        configure()
+
+        assert ComponentCatalog().get("hover-gallery").name == "hover_gallery"
+
+    def test_the_name_ignores_case(self, configure):
+        configure()
+
+        assert ComponentCatalog().get("Card.Title").name == "card.title"
+
+    def test_a_hyphen_is_not_an_underscore_when_snake_casing_is_off(self, configure):
+        configure(COTTON_SNAKE_CASED_NAMES=False)
+
+        with pytest.raises(ComponentNotFound):
+            ComponentCatalog().get("hover-gallery")
+
+    def test_an_unknown_name_suggests_the_closest_names(self, configure):
+        configure()
+
+        with pytest.raises(ComponentNotFound) as caught:
+            ComponentCatalog().get("card.titel")
+
+        assert caught.value.name == "card.titel"
+        assert "card.title" in caught.value.suggestions
+
+    def test_at_most_five_names_are_suggested(self, configure, project_dir):
+        for suffix in "abcdefgh":
+            write(project_dir, f"cotton/widget_{suffix}.html")
+        configure()
+
+        with pytest.raises(ComponentNotFound) as caught:
+            ComponentCatalog().get("widget_z")
+
+        assert len(caught.value.suggestions) == 5
+
+    def test_a_name_unlike_any_component_suggests_nothing(self, configure):
+        configure()
+
+        with pytest.raises(ComponentNotFound) as caught:
+            ComponentCatalog().get("nothing")
+
+        assert caught.value.suggestions == ()
+
+
+class TestComponentCatalogUses:
+    @pytest.fixture
+    def title(self, configure, project_dir):
+        write(project_dir, "pages/a.html", "<c-card.title>A</c-card.title>\n")
+        write(project_dir, "pages/b.html", '<c-card.title class="x" />\n')
+        write(project_dir, "pages/c.html", "{% cotton card.title %}C{% endcotton %}\n")
+        write(project_dir, "pages/twice.html", "<c-card.title /><c-card.title />\n")
+        write(project_dir, "pages/dynamic.html", '<c-component is="card.title" />\n')
+        write(project_dir, "pages/other.html", "<c-card>x</c-card>\n")
+        write(project_dir, "cotton/uses_title.html", "<c-card.title />\n")
+        write(project_dir, "cotton/nested/uses_title.html", "<c-card.title />\n")
+        configure()
+        return ComponentCatalog().get("card.title")
+
+    def test_counts_each_page_template_that_references_the_component(
+        self, title, project_dir
+    ):
+        used = ComponentCatalog().uses(title)
+
+        assert [p.name for p in used if project_dir.resolve() in p.parents] == [
+            "a.html",
+            "b.html",
+            "c.html",
+            "twice.html",
+        ]
+
+    def test_a_file_with_two_references_counts_once(self, title):
+        used = ComponentCatalog().uses(title)
+
+        assert [p.name for p in used].count("twice.html") == 1
+
+    def test_component_files_are_not_counted(self, title):
+        used = ComponentCatalog().uses(title)
+
+        assert not [p for p in used if "uses_title" in p.name]
+
+    def test_a_dynamic_reference_is_not_counted(self, title):
+        used = ComponentCatalog().uses(title)
+
+        assert "dynamic.html" not in [p.name for p in used]
+
+    def test_a_longer_name_is_not_a_use(self, configure, project_dir):
+        write(project_dir, "pages/longer.html", "<c-card.titles />\n")
+        configure()
+        catalog = ComponentCatalog()
+
+        assert catalog.uses(catalog.get("card.title")) == [
+            (FIRST_PAGES / "home.html").resolve()
+        ]
+
+    def test_hyphenated_references_match_an_underscored_name(
+        self, configure, project_dir
+    ):
+        write(project_dir, "pages/hover.html", "<c-hover-gallery />\n")
+        configure()
+        catalog = ComponentCatalog()
+
+        used = catalog.uses(catalog.get("hover_gallery"))
+
+        assert [p.name for p in used] == ["hover.html"]
+
+    def test_a_component_nobody_uses_has_no_paths(self, configure):
+        configure()
+        catalog = ComponentCatalog()
+
+        assert catalog.uses(catalog.get("badge")) == []
+
+    def test_templates_in_an_app_folder_count_as_well_as_the_project_folder(
+        self, title
+    ):
+        used = ComponentCatalog().uses(title)
+
+        assert "home.html" in [p.name for p in used]
+        assert len({p.parent for p in used}) == 2
+
+    def test_an_undecodable_template_is_skipped(self, configure, project_dir):
+        broken = project_dir / "pages" / "broken.html"
+        broken.parent.mkdir(parents=True)
+        broken.write_bytes(b"\xff\xfe <c-badge /> \xff")
+        write(project_dir, "pages/fine.html", "<c-badge />\n")
+        configure()
+        catalog = ComponentCatalog()
+
+        used = catalog.uses(catalog.get("badge"))
+
+        assert [p.name for p in used] == ["fine.html"]
+
+    def test_paths_are_sorted(self, title):
+        used = ComponentCatalog().uses(title)
+
+        assert used == sorted(used)
+
+    def test_only_the_configured_cotton_dir_is_excluded(self, configure, project_dir):
+        write(project_dir, "components/badge.html")
+        write(project_dir, "components/user.html", "<c-badge />\n")
+        page = write(project_dir, "cotton/page.html", "<c-badge />\n")
+        configure(COTTON_DIR="components")
+        catalog = ComponentCatalog()
+
+        assert catalog.uses(catalog.get("badge")) == [page.resolve()]
