@@ -14,9 +14,9 @@ Article XI limits the package's runtime dependencies to Django and django-cotton
 
 A project's own template folder usually overrides a package's component, and between apps the first one in `INSTALLED_APPS` wins. Both follow from Django asking its template loaders in order and taking the first file found. The command follows the same order rather than reproducing either rule, so it agrees with what a page renders (SC-004). django-cotton's own loader also searches `BASE_DIR/templates` when that folder exists, even if `TEMPLATES` `DIRS` does not name it, so the command covers that folder too.
 
-## Usage counts every template folder, not only the project's
+## Usage counts page templates, not components
 
-"How many templates use it" is counted across every folder the project loads templates from, including installed packages. A package component that another package's templates use is in use in the project, and a component used only inside its own package still tells the developer which variant that package settled on. The JSON output gives the paths, so a developer who wants only the project's own uses can tell them apart.
+"How many templates use it" is counted across every folder the project loads templates from, including installed packages, but never inside a `COTTON_DIR` folder. A component used inside another component is a building block of that component, not a choice a page made, so counting it would make a near-copy look settled on. The JSON output gives the paths of the templates it counted.
 
 ## A name that matches nothing suggests the closest names
 
